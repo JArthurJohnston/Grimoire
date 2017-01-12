@@ -1,9 +1,9 @@
-package models.PixelProcessing;
+package models.PixelProcessing.Filters;
 
 /**
  * Created by Arthur on 1/8/2017.
  */
-public abstract class PixelAdjustment {
+public abstract class PixelFilter {
 
     public abstract int execute(int rgbValue);
 

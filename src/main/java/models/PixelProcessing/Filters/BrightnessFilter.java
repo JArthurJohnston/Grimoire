@@ -1,11 +1,11 @@
-package models.PixelProcessing;
+package models.PixelProcessing.Filters;
 
 import java.awt.*;
 
 /**
  * Created by Arthur on 1/8/2017.
  */
-public class BrightnessPixelAdjustment extends PixelAdjustment {
+public class BrightnessFilter extends PixelFilter {
 
     public static final int DEFAULT_BRIGHTNESS = 0;
     private int brightnessValue = DEFAULT_BRIGHTNESS;

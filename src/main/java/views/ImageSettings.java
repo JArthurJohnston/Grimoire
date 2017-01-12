@@ -5,9 +5,11 @@
  */
 package views;
 
-import models.PixelProcessing.BrightnessPixelAdjustment;
-import models.PixelProcessing.ContrastPixelAdjustment;
-import models.PixelProcessing.PixelAdjustment;
+import models.PixelProcessing.Filters.BrightnessFilter;
+import models.PixelProcessing.Filters.ContrastFilter;
+import models.PixelProcessing.Filters.GreyscaleFilter;
+import models.PixelProcessing.Filters.LuminescenceFilter;
+import models.PixelProcessing.Filters.PixelFilter;
 
 /**
  *
@@ -16,8 +18,10 @@ import models.PixelProcessing.PixelAdjustment;
 @SuppressWarnings("ALL")
 public class ImageSettings extends javax.swing.JFrame {
 
-    private final BrightnessPixelAdjustment brightnessPixelAdjustment;
-    private final ContrastPixelAdjustment contrastPixelAdjustment;
+    private final BrightnessFilter brightnessPixelAdjustment;
+    private final ContrastFilter contrastPixelAdjustment;
+    private final LuminescenceFilter luminescenceFilter;
+    private final GreyscaleFilter greyscaleFilter;
 
     /**
      * Creates new form ImageSettings
@@ -25,29 +29,32 @@ public class ImageSettings extends javax.swing.JFrame {
     
     public ImageSettings() {
         initComponents();
-        contrastPixelAdjustment = new ContrastPixelAdjustment();
-        brightnessPixelAdjustment = new BrightnessPixelAdjustment();
-//        this.gammaAdjustment = new GammaAdjustment();
+        contrastPixelAdjustment = new ContrastFilter();
+        brightnessPixelAdjustment = new BrightnessFilter();
+        luminescenceFilter = new LuminescenceFilter();
+        greyscaleFilter = new GreyscaleFilter();
         this.setSliderDefaults();
         this.setLabelDefaults();
     }
     
     private void setLabelDefaults(){
-//        this.gammaLabel.setText(Float.toString(this.gammaAdjustment.getGammaAdjustment()));
+        this.luminescenceLabel.setText(Float.toString(this.luminescenceFilter.getLuminescenceThreashold()));
         this.brightnessLabel.setText(Integer.toString(this.brightnessPixelAdjustment.getBrightnessValue()));
         this.contrastLabel.setText(Float.toString(this.contrastPixelAdjustment.getContrastLevel()));
     }
 
     private void setSliderDefaults(){
         this.brightnessSlider.setValue(this.brightnessPixelAdjustment.DEFAULT_BRIGHTNESS);
-//        this.gammaSlider.setValue((int)this.gammaAdjustment.defaultGammaAdjustment);
+        this.luminescenceSlider.setValue(LuminescenceFilter.DEFAULT_LUMINESCENCE_THREASHOLD);
         this.contrastSlider.setValue((int)this.contrastPixelAdjustment.DEFAULT_CONTRAST_LEVEL);
-
     }
 
-    public PixelAdjustment[] getAdjustments(){
-//        return new Adjustment[] {this.brightnessAdjustment, this.contrastAdjustment, this.gammaAdjustment};
-        return new PixelAdjustment[] {this.brightnessPixelAdjustment, this.contrastPixelAdjustment};
+    public PixelFilter[] getFilters(){
+        return new PixelFilter[] {
+            this.brightnessPixelAdjustment, 
+            this.contrastPixelAdjustment, 
+            this.luminescenceFilter
+        };
     }
 
     /**
@@ -66,9 +73,10 @@ public class ImageSettings extends javax.swing.JFrame {
         brightnessSlider = new javax.swing.JSlider();
         brightnessLabel = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        gammaSlider = new javax.swing.JSlider();
-        gammaLabel = new javax.swing.JLabel();
+        luminescenceSlider = new javax.swing.JSlider();
+        luminescenceLabel = new javax.swing.JLabel();
         resetButton = new javax.swing.JButton();
+        greyscaleCheckbox = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Image Settings");
@@ -107,27 +115,33 @@ public class ImageSettings extends javax.swing.JFrame {
         brightnessLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         brightnessLabel.setText("0");
 
-        jLabel5.setText("Gamma");
+        jLabel5.setText("Luminescence");
 
-        gammaSlider.setMajorTickSpacing(100);
-        gammaSlider.setMaximum(1000);
-        gammaSlider.setMinimum(-1000);
-        gammaSlider.setMinorTickSpacing(50);
-        gammaSlider.setPaintTicks(true);
-        gammaSlider.setValue(0);
-        gammaSlider.addChangeListener(new javax.swing.event.ChangeListener() {
+        luminescenceSlider.setMajorTickSpacing(100);
+        luminescenceSlider.setMaximum(1000);
+        luminescenceSlider.setMinorTickSpacing(50);
+        luminescenceSlider.setPaintTicks(true);
+        luminescenceSlider.setValue(0);
+        luminescenceSlider.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                gammaSliderStateChanged(evt);
+                luminescenceSliderStateChanged(evt);
             }
         });
 
-        gammaLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        gammaLabel.setText("0");
+        luminescenceLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        luminescenceLabel.setText("0");
 
         resetButton.setText("Reset");
         resetButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 resetButtonActionPerformed(evt);
+            }
+        });
+
+        greyscaleCheckbox.setText("Greyscale");
+        greyscaleCheckbox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                greyscaleCheckboxActionPerformed(evt);
             }
         });
 
@@ -138,25 +152,26 @@ public class ImageSettings extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel5))
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(gammaSlider, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
+                            .addComponent(luminescenceSlider, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
                             .addComponent(brightnessSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(contrastSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(contrastLabel, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(gammaLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(luminescenceLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(brightnessLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(resetButton)))
+                        .addComponent(resetButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(greyscaleCheckbox)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel5))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -180,11 +195,13 @@ public class ImageSettings extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(gammaSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(gammaLabel))
+                        .addComponent(luminescenceSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(luminescenceLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(greyscaleCheckbox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
                 .addComponent(resetButton)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -199,11 +216,11 @@ public class ImageSettings extends javax.swing.JFrame {
         this.setSliderDefaults();
     }//GEN-LAST:event_resetButtonActionPerformed
 
-    private void gammaSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_gammaSliderStateChanged
-//        float newGamma = this.gammaSlider.getValue() /100.0f;
-//        this.gammaLabel.setText(Float.toString(newGamma));
-//        this.gammaAdjustment.update(newGamma);
-    }//GEN-LAST:event_gammaSliderStateChanged
+    private void luminescenceSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_luminescenceSliderStateChanged
+        float newGamma = this.luminescenceSlider.getValue() /100.0f;
+        this.luminescenceLabel.setText(Float.toString(newGamma));
+        this.luminescenceFilter.update(newGamma);
+    }//GEN-LAST:event_luminescenceSliderStateChanged
 
     private void brightnessSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_brightnessSliderStateChanged
         int newBrightness = this.brightnessSlider.getValue();
@@ -217,16 +234,21 @@ public class ImageSettings extends javax.swing.JFrame {
         this.contrastPixelAdjustment.update(newContrast);
     }//GEN-LAST:event_contrastSliderStateChanged
 
+    private void greyscaleCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_greyscaleCheckboxActionPerformed
+        this.greyscaleFilter.update(this.greyscaleCheckbox.isSelected());
+    }//GEN-LAST:event_greyscaleCheckboxActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel brightnessLabel;
     private javax.swing.JSlider brightnessSlider;
     private javax.swing.JLabel contrastLabel;
     private javax.swing.JSlider contrastSlider;
-    private javax.swing.JLabel gammaLabel;
-    private javax.swing.JSlider gammaSlider;
+    private javax.swing.JCheckBox greyscaleCheckbox;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel luminescenceLabel;
+    private javax.swing.JSlider luminescenceSlider;
     private javax.swing.JButton resetButton;
     // End of variables declaration//GEN-END:variables
 }

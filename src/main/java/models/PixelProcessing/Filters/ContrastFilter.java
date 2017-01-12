@@ -1,16 +1,16 @@
-package models.PixelProcessing;
+package models.PixelProcessing.Filters;
 
 import java.awt.*;
 
 /**
  * Created by Arthur on 1/8/2017.
  */
-public class ContrastPixelAdjustment extends PixelAdjustment {
+public class ContrastFilter extends PixelFilter {
 
     public static final float DEFAULT_CONTRAST_LEVEL = 0.0f;
     private float contrastLevel;
 
-    public ContrastPixelAdjustment(){
+    public ContrastFilter(){
         this.contrastLevel = calculateCorrectionFactor(DEFAULT_CONTRAST_LEVEL);
     }
 

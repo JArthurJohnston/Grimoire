@@ -24,33 +24,34 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                  </Group>
                   <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="gammaSlider" pref="321" max="32767" attributes="0"/>
+                          <Component id="luminescenceSlider" pref="321" max="32767" attributes="0"/>
                           <Component id="brightnessSlider" max="32767" attributes="0"/>
                           <Component id="contrastSlider" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="contrastLabel" alignment="1" min="-2" max="-2" attributes="0"/>
-                          <Component id="gammaLabel" alignment="1" max="32767" attributes="0"/>
+                          <Component id="luminescenceLabel" alignment="1" max="32767" attributes="0"/>
                           <Component id="brightnessLabel" alignment="1" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       <Component id="resetButton" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="greyscaleCheckbox" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -81,13 +82,15 @@
                   <Group type="102" attributes="0">
                       <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="gammaSlider" min="-2" max="-2" attributes="0"/>
+                      <Component id="luminescenceSlider" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="gammaLabel" min="-2" max="-2" attributes="0"/>
+                  <Component id="luminescenceLabel" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
+              <Component id="greyscaleCheckbox" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="78" max="32767" attributes="0"/>
               <Component id="resetButton" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -143,23 +146,22 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel5">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Gamma"/>
+        <Property name="text" type="java.lang.String" value="Luminescence"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JSlider" name="gammaSlider">
+    <Component class="javax.swing.JSlider" name="luminescenceSlider">
       <Properties>
         <Property name="majorTickSpacing" type="int" value="100"/>
         <Property name="maximum" type="int" value="1000"/>
-        <Property name="minimum" type="int" value="-1000"/>
         <Property name="minorTickSpacing" type="int" value="50"/>
         <Property name="paintTicks" type="boolean" value="true"/>
         <Property name="value" type="int" value="0"/>
       </Properties>
       <Events>
-        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="gammaSliderStateChanged"/>
+        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="luminescenceSliderStateChanged"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JLabel" name="gammaLabel">
+    <Component class="javax.swing.JLabel" name="luminescenceLabel">
       <Properties>
         <Property name="horizontalAlignment" type="int" value="0"/>
         <Property name="text" type="java.lang.String" value="0"/>
@@ -171,6 +173,14 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="resetButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="greyscaleCheckbox">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Greyscale"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="greyscaleCheckboxActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>
