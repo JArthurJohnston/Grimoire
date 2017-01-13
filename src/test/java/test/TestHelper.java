@@ -8,7 +8,4 @@ import java.nio.file.Paths;
 @SuppressWarnings("Since15")
 public class TestHelper {
 
-    public static void printWorkingDirectory(){
-        System.out.println("PWD: " + Paths.get(".").toAbsolutePath().normalize().toString());
-    }
 }

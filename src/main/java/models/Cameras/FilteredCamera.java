@@ -1,6 +1,6 @@
 package models.Cameras;
 
-import models.PixelProcessing.Detectors.MotionDetector;
+import models.ImageProcessing.ImageProcessor;
 import models.PixelProcessing.Filters.PixelFilter;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
@@ -17,15 +17,20 @@ public class FilteredCamera extends SimpleCamera{
 
     private final List<PixelFilter> filters;
     private final Java2DFrameConverter converter;
-    private static MotionDetector detector = new MotionDetector();
+    private final LinkedList<ImageProcessor> imageProcessors;
 
     public FilteredCamera(){
         converter = new Java2DFrameConverter();
         filters = new LinkedList<PixelFilter>();
+        imageProcessors = new LinkedList<ImageProcessor>();
     }
 
     public void addFilters(PixelFilter[] filters){
         this.filters.addAll(Arrays.asList(filters));
+    }
+
+    public void addProcessor(ImageProcessor processor){
+        this.imageProcessors.add(processor);
     }
 
     public Frame getFrame(){
@@ -37,7 +42,7 @@ public class FilteredCamera extends SimpleCamera{
             return frame;
         }
         BufferedImage image = converter.convert(frame);
-
+        processImage(image);
         if(image != null){
             int height = image.getHeight();
             int width = image.getWidth();
@@ -46,11 +51,16 @@ public class FilteredCamera extends SimpleCamera{
                     image.setRGB(x, y, applyFilters(image.getRGB(x, y)));
                 }
             }
-//            detector.processImage(image);
             return converter.convert(image);
         }
         System.out.println("Null Image from frame");
         return frame;
+    }
+
+    private void processImage(BufferedImage image){
+        for (ImageProcessor processor : this.imageProcessors) {
+            processor.process(image);
+        }
     }
 
     private int applyFilters(int rgbValue){

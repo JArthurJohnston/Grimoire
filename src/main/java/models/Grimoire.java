@@ -1,7 +1,7 @@
 package models;
 
 import models.Cameras.FilteredCamera;
-import models.PixelProcessing.Detectors.MotionDetector;
+import models.ImageProcessing.ImageFileCapture.ImageWriter;
 import org.bytedeco.javacv.*;
 import views.ImageSettings;
 
@@ -17,6 +17,7 @@ public class Grimoire {
     private static CanvasFrame canvas;
     private static ImageSettings imageSettings;
     private static FilteredCamera camera;
+    public static ImageWriter imageWriter;
 
     public static void main(String[] args){
         canvas = new CanvasFrame("Webcam");
@@ -26,6 +27,8 @@ public class Grimoire {
 
         camera = new FilteredCamera();
 
+        imageWriter = new ImageWriter();
+
         imageSettings = new ImageSettings();
         imageSettings.setVisible(true);
 
@@ -34,6 +37,7 @@ public class Grimoire {
 
     private static void startOpenCVFrameGrabber() {
         camera.addFilters(imageSettings.getFilters());
+        camera.addProcessor(imageWriter);
         camera.start();
         while (camera.isRunning()){
             canvas.showImage(camera.getFrame());
@@ -47,6 +51,7 @@ public class Grimoire {
             }
 
             public void windowClosing(WindowEvent e) {
+                imageWriter.stop();
                 camera.stop();
             }
 

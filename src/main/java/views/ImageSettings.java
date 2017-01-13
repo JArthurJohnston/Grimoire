@@ -5,6 +5,8 @@
  */
 package views;
 
+import javax.swing.JFileChooser;
+import models.Grimoire;
 import models.PixelProcessing.Filters.BrightnessFilter;
 import models.PixelProcessing.Filters.ContrastFilter;
 import models.PixelProcessing.Filters.GreyscaleFilter;
@@ -51,6 +53,7 @@ public class ImageSettings extends javax.swing.JFrame {
 
     public PixelFilter[] getFilters(){
         return new PixelFilter[] {
+            this.greyscaleFilter,
             this.brightnessPixelAdjustment, 
             this.contrastPixelAdjustment, 
             this.luminescenceFilter
@@ -77,6 +80,9 @@ public class ImageSettings extends javax.swing.JFrame {
         luminescenceLabel = new javax.swing.JLabel();
         resetButton = new javax.swing.JButton();
         greyscaleCheckbox = new javax.swing.JCheckBox();
+        decrementLuminescenceButton = new javax.swing.JButton();
+        incrementLuminescenceButton = new javax.swing.JButton();
+        captureImageButton = new javax.swing.JToggleButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Image Settings");
@@ -145,6 +151,27 @@ public class ImageSettings extends javax.swing.JFrame {
             }
         });
 
+        decrementLuminescenceButton.setText("<");
+        decrementLuminescenceButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                decrementLuminescenceButtonActionPerformed(evt);
+            }
+        });
+
+        incrementLuminescenceButton.setText(">");
+        incrementLuminescenceButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                incrementLuminescenceButtonActionPerformed(evt);
+            }
+        });
+
+        captureImageButton.setText("Capture Images");
+        captureImageButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                captureImageButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -154,9 +181,20 @@ public class ImageSettings extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(luminescenceSlider, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
-                            .addComponent(brightnessSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(contrastSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(brightnessSlider, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
+                            .addComponent(contrastSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(decrementLuminescenceButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(luminescenceSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(incrementLuminescenceButton))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(greyscaleCheckbox)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(captureImageButton)
+                                .addGap(0, 0, Short.MAX_VALUE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(contrastLabel, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -167,7 +205,6 @@ public class ImageSettings extends javax.swing.JFrame {
                         .addComponent(resetButton))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(greyscaleCheckbox)
                             .addComponent(jLabel1)
                             .addComponent(jLabel3)
                             .addComponent(jLabel5))
@@ -195,23 +232,28 @@ public class ImageSettings extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(luminescenceSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(incrementLuminescenceButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(decrementLuminescenceButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(luminescenceSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(17, 17, 17)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(greyscaleCheckbox)
+                            .addComponent(captureImageButton))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(luminescenceLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(greyscaleCheckbox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
-                .addComponent(resetButton)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(resetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(7, 7, 7))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
-        // TODO add your handling code here:
         this.brightnessPixelAdjustment.reset();
-//        this.gammaAdjustment.reset();
         this.contrastPixelAdjustment.reset();
+        this.luminescenceFilter.reset();
         this.setLabelDefaults();
         this.setSliderDefaults();
     }//GEN-LAST:event_resetButtonActionPerformed
@@ -238,12 +280,38 @@ public class ImageSettings extends javax.swing.JFrame {
         this.greyscaleFilter.update(this.greyscaleCheckbox.isSelected());
     }//GEN-LAST:event_greyscaleCheckboxActionPerformed
 
+    private void decrementLuminescenceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_decrementLuminescenceButtonActionPerformed
+        updateLuminescence(-0.01f);
+    }//GEN-LAST:event_decrementLuminescenceButtonActionPerformed
+
+    private void incrementLuminescenceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_incrementLuminescenceButtonActionPerformed
+        updateLuminescence(0.01f);
+    }//GEN-LAST:event_incrementLuminescenceButtonActionPerformed
+
+    private void captureImageButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_captureImageButtonActionPerformed
+        if(this.captureImageButton.isSelected()){
+            Grimoire.imageWriter.start();
+        } else {
+            Grimoire.imageWriter.stop();
+        }
+    }//GEN-LAST:event_captureImageButtonActionPerformed
+
+    private void updateLuminescence(float incrementalValue) {
+        // TODO add your handling code here:
+        float newValue = this.luminescenceFilter.getLuminescenceThreashold() + incrementalValue;
+        this.luminescenceFilter.update(newValue);
+        this.luminescenceLabel.setText(Float.toString(newValue));
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel brightnessLabel;
     private javax.swing.JSlider brightnessSlider;
+    private javax.swing.JToggleButton captureImageButton;
     private javax.swing.JLabel contrastLabel;
     private javax.swing.JSlider contrastSlider;
+    private javax.swing.JButton decrementLuminescenceButton;
     private javax.swing.JCheckBox greyscaleCheckbox;
+    private javax.swing.JButton incrementLuminescenceButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
