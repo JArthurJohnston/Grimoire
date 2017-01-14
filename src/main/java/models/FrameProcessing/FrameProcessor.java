@@ -1,5 +1,7 @@
 package models.FrameProcessing;
 
+import models.RuneKeeper;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
@@ -14,8 +16,10 @@ public class FrameProcessor {
 
 
     private LinkedList<ProcessedFrame> processedFrames;
+    private RuneKeeper runeKeeper;
 
-    public FrameProcessor(){
+    public FrameProcessor(RuneKeeper keeper){
+        this.runeKeeper = keeper;
         this.processedFrames = new LinkedList<ProcessedFrame>();
     }
 
@@ -40,6 +44,13 @@ public class FrameProcessor {
         }
     }
 
+    public boolean motionDetected(){
+        return false;
+    }
+
+    public RuneKeeper getRuneKeeper(){
+        return this.runeKeeper;
+    }
     private boolean pixelIsSpecial(int rgbValue){
         return rgbValue == Color.white.getRGB();
     }

@@ -18,6 +18,8 @@ public class FilteredCamera extends SimpleCamera{
     private final List<PixelFilter> filters;
     private final Java2DFrameConverter converter;
     private final LinkedList<ImageProcessor> imageProcessors;
+    public final static int DEFAULT_SCANLINE_SETTING = 1;
+    private int scanLineSetting = DEFAULT_SCANLINE_SETTING;
 
     public FilteredCamera(){
         converter = new Java2DFrameConverter();
@@ -46,7 +48,7 @@ public class FilteredCamera extends SimpleCamera{
         if(image != null){
             int height = image.getHeight();
             int width = image.getWidth();
-            for(int y = 0; y < height; y++) {
+            for(int y = 0; y < height; y+= this.scanLineSetting) {
                 for(int x = 0; x < width; x++){
                     image.setRGB(x, y, applyFilters(image.getRGB(x, y)));
                 }
@@ -69,6 +71,10 @@ public class FilteredCamera extends SimpleCamera{
             newValue = filter.execute(newValue);
         }
         return newValue;
+    }
+
+    public void updateScanlines(int scanlineValue){
+        this.scanLineSetting = scanlineValue;
     }
 
 }

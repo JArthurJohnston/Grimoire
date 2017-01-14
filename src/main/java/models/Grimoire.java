@@ -31,6 +31,7 @@ public class Grimoire {
 
         imageSettings = new ImageSettings();
         imageSettings.setVisible(true);
+        imageSettings.setCamera(camera);
 
         startOpenCVFrameGrabber();
     }

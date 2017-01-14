@@ -1,8 +1,6 @@
 package models.ImageProcessing.ImageFileCapture;
 
-import helpers.Helper;
 import models.ImageProcessing.ImageProcessor;
-
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
