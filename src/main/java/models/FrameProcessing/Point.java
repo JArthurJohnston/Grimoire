@@ -5,19 +5,17 @@ package models.FrameProcessing;
  */
 public class Point {
 
-    private int xCoord;
-    private int yCoord;
+    public final int xCoord;
+    public final int yCoord;
 
-    public Point(int xCoord, int yCoord){
+    public Point(final int xCoord, final int yCoord){
         this.xCoord = xCoord;
         this.yCoord = yCoord;
     }
 
-    public int getX(){
-        return this.xCoord;
-    }
-
-    public int getY(){
-        return this.yCoord * -1;
+    public int distanceTo(Point anotherPoint){
+        return (int)Math.sqrt(
+                Math.pow(this.xCoord - anotherPoint.xCoord, 2) +
+                        Math.pow(this.yCoord - anotherPoint.yCoord, 2));
     }
 }
