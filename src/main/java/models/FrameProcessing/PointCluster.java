@@ -5,11 +5,15 @@ import java.util.List;
 public class PointCluster {
 
     private static final int FUDGE_FACTOR  = 20;
-    private List<Point> points;
+    private final List<Point> points;
     public Point rightMostPoint;
     public Point leftMostPoint;
     public Point topMostPoint;
     public Point bottomMostPoint;
+
+    public PointCluster(){
+        this.points = new LinkedList<Point>();
+    }
 
     public PointCluster(Point point) {
         this.points = new LinkedList<Point>();
@@ -22,17 +26,40 @@ public class PointCluster {
     }
 
     public boolean contains(Point point) {
+        return contains(point.xCoord, point.yCoord);
+    }
+
+    public boolean contains(int x, int y){
         final int fudgeFactor = 7;
-        boolean withinHorizontalBounds = point.xCoord <= rightMostPoint.xCoord + fudgeFactor
-                && point.xCoord >= leftMostPoint.xCoord - fudgeFactor;
-        boolean withinVerticalBounds = point.yCoord >= topMostPoint.yCoord - fudgeFactor
-                && point.yCoord <= bottomMostPoint.yCoord + fudgeFactor;
+        boolean withinHorizontalBounds = x <= rightMostPoint.xCoord + fudgeFactor
+                && x >= leftMostPoint.xCoord - fudgeFactor;
+        boolean withinVerticalBounds = y >= topMostPoint.yCoord - fudgeFactor
+                && y <= bottomMostPoint.yCoord + fudgeFactor;
         return withinHorizontalBounds && withinVerticalBounds;
     }
 
     public void add(Point point){
+        if(this.points.isEmpty())
+            setFirstPoint(point);
         isBorderPoint(point);
         this.points.add(point);
+    }
+
+    public boolean canHandle(int x, int y){
+        return points.isEmpty() || this.contains(x, y);
+    }
+
+    public void handle(int x, int y){
+        if(this.canHandle(x, y))
+            add(new Point(x, y));
+    }
+
+    public int width(){
+        return rightMostPoint.xCoord - leftMostPoint.xCoord;
+    }
+
+    public int height(){
+        return bottomMostPoint.yCoord - topMostPoint.yCoord;
     }
 
     private void setFirstPoint(Point point){

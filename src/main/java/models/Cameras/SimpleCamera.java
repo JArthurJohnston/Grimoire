@@ -42,7 +42,7 @@ public class SimpleCamera {
         } catch (FrameGrabber.Exception e) {
 //            e.printStackTrace();
             System.out.println("Frame Dropped");
-            return new Frame();
+            return null;
         }
     }
 }

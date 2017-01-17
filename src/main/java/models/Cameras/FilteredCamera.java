@@ -1,10 +1,15 @@
 package models.Cameras;
 
+import models.FrameProcessing.ClusterCollection;
+import models.FrameProcessing.PointCluster;
 import models.ImageProcessing.ImageProcessor;
+import models.PixelProcessing.Detectors.LuminescenceDetector;
+import models.PixelProcessing.Detectors.MotionDetector;
 import models.PixelProcessing.Filters.PixelFilter;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -20,11 +25,14 @@ public class FilteredCamera extends SimpleCamera{
     private final LinkedList<ImageProcessor> imageProcessors;
     public final static int DEFAULT_SCANLINE_SETTING = 1;
     private int scanLineSetting = DEFAULT_SCANLINE_SETTING;
+    private final MotionDetector motionDetector;
+
 
     public FilteredCamera(){
         converter = new Java2DFrameConverter();
         filters = new LinkedList<PixelFilter>();
         imageProcessors = new LinkedList<ImageProcessor>();
+        motionDetector = new MotionDetector(new LuminescenceDetector());
     }
 
     public void addFilters(PixelFilter[] filters){
@@ -50,13 +58,25 @@ public class FilteredCamera extends SimpleCamera{
             int width = image.getWidth();
             for(int y = 0; y < height; y+= this.scanLineSetting) {
                 for(int x = 0; x < width; x++){
-                    image.setRGB(x, y, applyFilters(image.getRGB(x, y)));
+                    int filteredRgb = applyFilters(image.getRGB(x, y));
+                    image.setRGB(x, y, filteredRgb);
                 }
             }
             return converter.convert(image);
         }
         System.out.println("Null Image from frame");
         return frame;
+    }
+
+
+    private void drawRectanglesAroundBrightSpots(BufferedImage bufferedImage) {
+        ClusterCollection clusterCollection = motionDetector.processImage(bufferedImage);
+        Graphics2D graphics = bufferedImage.createGraphics();
+        graphics.setColor(Color.RED);
+        for (PointCluster cluster : clusterCollection.clusters) {
+            graphics.drawRect(cluster.leftMostPoint.xCoord, cluster.topMostPoint.yCoord, cluster.width(), cluster.height());
+        }
+        graphics.dispose();
     }
 
     private void processImage(BufferedImage image){
