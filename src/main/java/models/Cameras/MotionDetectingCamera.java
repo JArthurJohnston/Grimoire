@@ -28,17 +28,17 @@ public class MotionDetectingCamera extends SimpleCamera {
         Frame frame = super.getFrame();
         if(frame != null){
             BufferedImage bufferedImage = java2DFrameConverter.getBufferedImage(frame);
-            drawRectanglesAroundBrightSpots(bufferedImage);
+            ClusterCollection clusterCollection = motionDetector.processImage(bufferedImage);
+            drawRectanglesAroundBrightSpots(bufferedImage, clusterCollection);
             return java2DFrameConverter.convert(bufferedImage);
         }
         return new Frame();
     }
 
-    private void drawRectanglesAroundBrightSpots(BufferedImage bufferedImage) {
-        ClusterCollection clusterCollection = motionDetector.processImage(bufferedImage);
+    private void drawRectanglesAroundBrightSpots(BufferedImage bufferedImage, ClusterCollection clusters) {
         Graphics2D graphics = bufferedImage.createGraphics();
         graphics.setColor(Color.RED);
-        for (PointCluster cluster : clusterCollection.clusters) {
+        for (PointCluster cluster : clusters.clusters) {
             graphics.drawRect(cluster.leftMostPoint.xCoord, cluster.topMostPoint.yCoord, cluster.width(), cluster.height());
         }
         graphics.dispose();

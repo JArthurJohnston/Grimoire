@@ -5,24 +5,13 @@ import java.util.List;
 public class PointCluster {
 
     private static final int FUDGE_FACTOR  = 20;
-    private final List<Point> points;
     public Point rightMostPoint;
     public Point leftMostPoint;
     public Point topMostPoint;
     public Point bottomMostPoint;
 
-    public PointCluster(){
-        this.points = new LinkedList<Point>();
-    }
-
     public PointCluster(Point point) {
-        this.points = new LinkedList<Point>();
         setFirstPoint(point);
-        this.points.add(point);
-    }
-
-    public List<Point> getPoints() {
-        return points;
     }
 
     public boolean contains(Point point) {
@@ -38,20 +27,12 @@ public class PointCluster {
         return withinHorizontalBounds && withinVerticalBounds;
     }
 
+    public boolean contains(PointCluster otherCluster){
+        return false;
+    }
+
     public void add(Point point){
-        if(this.points.isEmpty())
-            setFirstPoint(point);
         isBorderPoint(point);
-        this.points.add(point);
-    }
-
-    public boolean canHandle(int x, int y){
-        return points.isEmpty() || this.contains(x, y);
-    }
-
-    public void handle(int x, int y){
-        if(this.canHandle(x, y))
-            add(new Point(x, y));
     }
 
     public int width(){
@@ -84,49 +65,5 @@ public class PointCluster {
         int xWidth = rightMostPoint.distanceTo(leftMostPoint) / 2;
         int yWidth = topMostPoint.distanceTo(bottomMostPoint) / 2;
         return new Point(rightMostPoint.xCoord - xWidth, topMostPoint.yCoord - yWidth);
-    }
-
-    public Direction getDirection(){
-        if(heightDidntChange()){
-            if(widthDidntChange()){
-                return Direction.NONE;
-            }
-            return Direction.HORIZONTAL;
-        } else if(widthDidntChange()) {
-            return Direction.VERTICAL;
-        } else if (slope() < 0) {
-            return Direction.DIAGONAL_NEGATIVE;
-        } else if (slope() > 0){
-            return Direction.DIAGONAL_POSITIVE;
-        }
-        return Direction.NONE;
-    }
-
-    private Point firstPoint(){
-        return points.get(0);
-    }
-
-    private Point lastPoint(){
-        return points.get(points.size() - 1);
-    }
-
-    private float yDifference(){
-        return (lastPoint().yCoord - firstPoint().yCoord);
-    }
-
-    private float xDifference(){
-        return (lastPoint().xCoord- firstPoint().xCoord);
-    }
-
-    private float slope(){
-        return yDifference() / xDifference();
-    }
-
-    private boolean widthDidntChange() {
-        return Math.abs(firstPoint().xCoord - lastPoint().xCoord) <= FUDGE_FACTOR;
-    }
-
-    private boolean heightDidntChange() {
-        return Math.abs(firstPoint().yCoord - lastPoint().yCoord) <= FUDGE_FACTOR;
     }
 }

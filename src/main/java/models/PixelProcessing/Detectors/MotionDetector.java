@@ -31,11 +31,15 @@ public class MotionDetector {
             }
         }
         ClusterCollection frameCluster = new ClusterCollection(clusterCreator.getClusters());
+        processClusters(frameCluster);
+        return frameCluster;
+    }
+
+    private void processClusters(ClusterCollection frameCluster) {
         if(lastFrame != null){
              detectMovements(frameCluster);
         }
         lastFrame = frameCluster;
-        return frameCluster;
     }
 
     private void detectMovements(ClusterCollection cluster){
@@ -43,11 +47,12 @@ public class MotionDetector {
             List<PointCluster> nearbyClusters = cluster.nearbyClustersTo(eachClusterFromLastFrame);
             if(!nearbyClusters.isEmpty()){
                 cluster.motionDetected = true;
+                System.out.println("Motion Detected");
             }
         }
     }
 
-    public void setScanLines(int newDistance){
+    public void updateScanDistance(int newDistance){
         this.scanDistance = newDistance;
     }
 }

@@ -30,11 +30,6 @@ public class FrameProcessor {
                 }
             }
         }
-        addFrame(frame);
-    }
-
-    private void addFrame(ProcessedFrame frame){
-        frame.clearUnnecessaryClusters();
         this.processedFrames.add(frame);
     }
 

@@ -16,7 +16,7 @@ public class ClusterCreator {
 
     public void handle(int xCoord, int yCoord){
         for (PointCluster eachCluster :  this.clusters) {
-            if (eachCluster.canHandle(xCoord, yCoord)){
+            if (eachCluster.contains(xCoord, yCoord)){
                 eachCluster.add(new Point(xCoord, yCoord));
                 return;
             }

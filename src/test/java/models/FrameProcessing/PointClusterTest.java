@@ -13,9 +13,6 @@ public class PointClusterTest {
     public void testConstruction() throws Exception {
         Point point = new Point(4, 5);
         PointCluster cluster = new PointCluster(point);
-
-        assertEquals(1, cluster.getPoints().size());
-        assertSame(point, cluster.getPoints().get(0));
     }
 
     @Test

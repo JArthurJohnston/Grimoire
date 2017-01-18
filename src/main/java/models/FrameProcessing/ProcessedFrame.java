@@ -30,16 +30,6 @@ public class ProcessedFrame {
         }
     }
 
-    public void clearUnnecessaryClusters(){
-        LinkedList<PointCluster> validClusters = new LinkedList<PointCluster>();
-        for (PointCluster cluster : this.clusters) {
-            if (cluster.getPoints().size() > 10) {
-                validClusters.add(cluster);
-            }
-        }
-        this.clusters = validClusters;
-    }
-
     public List<PointCluster> getClusters(){
         return this.clusters;
     }

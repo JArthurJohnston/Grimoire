@@ -68,17 +68,6 @@ public class FilteredCamera extends SimpleCamera{
         return frame;
     }
 
-
-    private void drawRectanglesAroundBrightSpots(BufferedImage bufferedImage) {
-        ClusterCollection clusterCollection = motionDetector.processImage(bufferedImage);
-        Graphics2D graphics = bufferedImage.createGraphics();
-        graphics.setColor(Color.RED);
-        for (PointCluster cluster : clusterCollection.clusters) {
-            graphics.drawRect(cluster.leftMostPoint.xCoord, cluster.topMostPoint.yCoord, cluster.width(), cluster.height());
-        }
-        graphics.dispose();
-    }
-
     private void processImage(BufferedImage image){
         for (ImageProcessor processor : this.imageProcessors) {
             processor.process(image);
