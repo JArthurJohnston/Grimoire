@@ -29,29 +29,27 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="brightnessSlider" pref="321" max="32767" attributes="0"/>
+                          <Component id="brightnessSlider" max="32767" attributes="0"/>
                           <Component id="contrastSlider" max="32767" attributes="0"/>
                           <Group type="102" alignment="1" attributes="0">
-                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               <Component id="decrementLuminescenceButton" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="luminescenceSlider" min="-2" pref="224" max="-2" attributes="0"/>
+                              <Component id="luminescenceSlider" min="-2" pref="272" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="incrementLuminescenceButton" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
                       </Group>
-                      <Group type="103" groupAlignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Group type="102" attributes="0">
-                              <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
-                              <Component id="luminescenceLabel" min="-2" pref="21" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="1" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="brightnessLabel" alignment="1" min="-2" pref="21" max="-2" attributes="0"/>
                                   <Component id="contrastLabel" alignment="1" min="-2" max="-2" attributes="0"/>
                               </Group>
+                              <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
                           </Group>
+                          <Component id="luminescenceLabel" pref="43" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="102" attributes="0">
@@ -65,6 +63,8 @@
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="captureImageButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="resetButton" min="-2" max="-2" attributes="0"/>
@@ -102,9 +102,11 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Component id="luminescenceLabel" max="32767" attributes="0"/>
-                  <Component id="incrementLuminescenceButton" max="32767" attributes="0"/>
-                  <Component id="decrementLuminescenceButton" alignment="0" max="32767" attributes="0"/>
-                  <Component id="luminescenceSlider" alignment="0" max="32767" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="decrementLuminescenceButton" alignment="0" max="32767" attributes="0"/>
+                      <Component id="luminescenceSlider" alignment="0" max="32767" attributes="0"/>
+                      <Component id="incrementLuminescenceButton" max="32767" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
@@ -116,6 +118,7 @@
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="resetButton" alignment="3" min="-2" pref="25" max="-2" attributes="0"/>
                           <Component id="captureImageButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
                   </Group>
@@ -254,6 +257,14 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Scanlines"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="jButton1">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Save Settings"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

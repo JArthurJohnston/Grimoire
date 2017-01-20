@@ -4,7 +4,7 @@ package models.PixelProcessing.Detectors;
  * Created by Arthur on 1/16/2017.
  */
 public class LuminescenceDetector implements PixelDetector{
-    private float luminescenceThreshold = 0.98f;
+    private float luminescenceThreshold = 1.0f;
 
 
     public boolean isInteresting(int rgbValue) {
@@ -14,7 +14,7 @@ public class LuminescenceDetector implements PixelDetector{
         return ((redValue * 0.2126f + greenValue * 0.7152f + blueValue * 0.0722f) / 255) > luminescenceThreshold;
     }
 
-    public void updateThreshold(int value){
+    public void updateThreshold(float value){
         this.luminescenceThreshold = value;
     }
 }

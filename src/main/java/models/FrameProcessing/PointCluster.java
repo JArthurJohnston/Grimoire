@@ -1,10 +1,8 @@
 package models.FrameProcessing;
-import java.util.LinkedList;
-import java.util.List;
 
 public class PointCluster {
 
-    private static final int FUDGE_FACTOR  = 20;
+    private static final int FUDGE_FACTOR  = 7;
     public Point rightMostPoint;
     public Point leftMostPoint;
     public Point topMostPoint;
@@ -19,16 +17,22 @@ public class PointCluster {
     }
 
     public boolean contains(int x, int y){
-        final int fudgeFactor = 7;
-        boolean withinHorizontalBounds = x <= rightMostPoint.xCoord + fudgeFactor
-                && x >= leftMostPoint.xCoord - fudgeFactor;
-        boolean withinVerticalBounds = y >= topMostPoint.yCoord - fudgeFactor
-                && y <= bottomMostPoint.yCoord + fudgeFactor;
+        boolean withinHorizontalBounds = x <= rightMostPoint.xCoord + FUDGE_FACTOR
+                && x >= leftMostPoint.xCoord - FUDGE_FACTOR;
+        boolean withinVerticalBounds = y >= topMostPoint.yCoord - FUDGE_FACTOR
+                && y <= bottomMostPoint.yCoord + FUDGE_FACTOR;
         return withinHorizontalBounds && withinVerticalBounds;
     }
+    public boolean envelops(PointCluster cluster){
+        return this.contains(cluster.rightMostPoint) &&
+                this.contains(cluster.leftMostPoint) &&
+                this.contains(cluster.topMostPoint) &&
+                this.contains(cluster.bottomMostPoint);
+    }
 
-    public boolean contains(PointCluster otherCluster){
-        return false;
+    public boolean isPossibleWandPoint(){
+        final int FUDGE_FACTOR = 25;
+        return width() < FUDGE_FACTOR && height() < FUDGE_FACTOR;
     }
 
     public void add(Point point){

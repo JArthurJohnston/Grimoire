@@ -1,9 +1,9 @@
 package models;
 
-import models.Cameras.FilteredCamera;
 import models.Cameras.MotionDetectingCamera;
 import models.Cameras.SimpleCamera;
 import models.ImageProcessing.ImageFileCapture.ImageWriter;
+import models.PixelProcessing.Detectors.MotionDetector;
 import org.bytedeco.javacv.*;
 import views.ImageSettings;
 
@@ -18,7 +18,7 @@ public class Grimoire {
 
     private static CanvasFrame canvas;
     private static ImageSettings imageSettings;
-    private static SimpleCamera camera;
+    private static MotionDetectingCamera camera;
     public static ImageWriter imageWriter;
 
     public static void main(String[] args){
@@ -27,20 +27,22 @@ public class Grimoire {
         canvas.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
         canvas.setSize(new Dimension(800, 600));
 
-//        camera = new FilteredCamera();
-        camera = new MotionDetectingCamera();
+        imageSettings = new ImageSettings();
+
+        MotionDetector motionDetector = new MotionDetector(imageSettings.luminescenceDetector, imageSettings.getFilters());
+        motionDetector.shouldChangeImage = true;
+        camera = new MotionDetectingCamera(motionDetector);
 
         imageWriter = new ImageWriter();
+        camera.writer = imageWriter;
 
-        imageSettings = new ImageSettings();
+        imageSettings.setDetector(motionDetector);
         imageSettings.setVisible(true);
-//        imageSettings.setCamera(camera);
 
         startOpenCVFrameGrabber();
     }
 
     private static void startOpenCVFrameGrabber() {
-//        camera.addFilters(imageSettings.getFilters());
 //        camera.addProcessor(imageWriter);
         camera.start();
         while (camera.isRunning()){

@@ -1,0 +1,4 @@
+Brightness: -16
+Contrast: 1.0
+Luminescence: 0.75
+Scanning: 3

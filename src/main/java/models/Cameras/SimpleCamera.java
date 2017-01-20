@@ -1,5 +1,6 @@
 package models.Cameras;
 
+import models.ImageProcessing.ImageFileCapture.ImageWriter;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.OpenCVFrameGrabber;
@@ -10,13 +11,17 @@ import org.bytedeco.javacv.OpenCVFrameGrabber;
 public class SimpleCamera {
     OpenCVFrameGrabber grabber;
     private boolean isRunning;
+    //these camera values may change after the computer is rebooted
+    private static final int WEBCAM = 0;
+    private static final int USB = 1;
 
     public boolean isRunning(){
         return isRunning;
     }
 
     public void start(){
-        grabber = new OpenCVFrameGrabber("");
+        //be sure to rebuild the project after changing the camera index
+        grabber = new OpenCVFrameGrabber(USB);
         try {
             grabber.start();
             isRunning = true;
@@ -40,7 +45,6 @@ public class SimpleCamera {
         try {
             return grabber.grab();
         } catch (FrameGrabber.Exception e) {
-//            e.printStackTrace();
             System.out.println("Frame Dropped");
             return null;
         }

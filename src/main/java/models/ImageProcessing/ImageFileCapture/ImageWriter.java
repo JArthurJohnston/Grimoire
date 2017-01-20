@@ -15,12 +15,12 @@ import java.util.concurrent.LinkedBlockingDeque;
 public class ImageWriter implements Runnable, ImageProcessor{
 
     private volatile boolean isRunning;
-    private final String parentDirectoryName = "C:\\Users\\Arthur\\IdeaProjects\\Grimoire-Maven\\res\\captured-frames";
+    //change this value if run in windows
+    private final String parentDirectoryName = "./res";
     private int numberOfFilesWritten = 0;
     BlockingQueue<BufferedImage> imageQueue = new LinkedBlockingDeque<BufferedImage>();
 
     public void process(BufferedImage image){
-//        Helper.printWorkingDirectory();
         if(isRunning){
             try {
                 imageQueue.put(image);

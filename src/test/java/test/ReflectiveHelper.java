@@ -1,5 +1,7 @@
 package test;
 
+import junit.framework.AssertionFailedError;
+
 import java.lang.reflect.Field;
 
 /**
@@ -14,7 +16,12 @@ public class ReflectiveHelper {
         return privateValue;
     }
 
-    public static <T>T getPrivateField(Object object, String fieldName, Class<T> returnType) throws Exception{
-        return (T)getPrivateField(object, fieldName);
+    public static <T>T getPrivateField(Object object, String fieldName, Class<T> fieldType) throws Exception{
+        Object privateField = getPrivateField(object, fieldName);
+        if(privateField.getClass() != fieldType){
+            throw new AssertionFailedError("Expected " + fieldType.getName() + " but was " + privateField.getClass().getName());
+        }
+        return (T) privateField;
     }
+
 }

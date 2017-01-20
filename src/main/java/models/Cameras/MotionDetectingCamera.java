@@ -1,10 +1,8 @@
 package models.Cameras;
 
-import models.FrameProcessing.ClusterCollection;
-import models.FrameProcessing.PointCluster;
-import models.PixelProcessing.Detectors.LuminescenceDetector;
+import models.FrameProcessing.*;
+import models.ImageProcessing.ImageFileCapture.ImageWriter;
 import models.PixelProcessing.Detectors.MotionDetector;
-import models.PixelProcessing.Detectors.WhitePixelDetector;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
 
@@ -18,9 +16,10 @@ public class MotionDetectingCamera extends SimpleCamera {
 
     private final MotionDetector motionDetector;
     private final Java2DFrameConverter java2DFrameConverter;
+    public ImageWriter writer;
 
-    public MotionDetectingCamera(){
-        motionDetector = new MotionDetector(new LuminescenceDetector());
+    public MotionDetectingCamera(MotionDetector detector){
+        motionDetector = detector;
         java2DFrameConverter = new Java2DFrameConverter();
     }
 
@@ -29,18 +28,33 @@ public class MotionDetectingCamera extends SimpleCamera {
         if(frame != null){
             BufferedImage bufferedImage = java2DFrameConverter.getBufferedImage(frame);
             ClusterCollection clusterCollection = motionDetector.processImage(bufferedImage);
-            drawRectanglesAroundBrightSpots(bufferedImage, clusterCollection);
+            drawBrightspotIds(bufferedImage, clusterCollection);
+            if(writer != null){
+                writer.process(bufferedImage);
+            }
             return java2DFrameConverter.convert(bufferedImage);
         }
         return new Frame();
     }
 
-    private void drawRectanglesAroundBrightSpots(BufferedImage bufferedImage, ClusterCollection clusters) {
+    private void drawBrightspotIds(BufferedImage bufferedImage, ClusterCollection clusters) {
         Graphics2D graphics = bufferedImage.createGraphics();
         graphics.setColor(Color.RED);
         for (PointCluster cluster : clusters.clusters) {
-            graphics.drawRect(cluster.leftMostPoint.xCoord, cluster.topMostPoint.yCoord, cluster.width(), cluster.height());
+            if(cluster.isPossibleWandPoint()){
+                graphics.setColor(Color.CYAN);
+                drawRectangleForCluster(graphics, cluster);
+                models.FrameProcessing.Point point = cluster.centerPoint();
+                graphics.drawString("WAND?", point.xCoord, point.yCoord);
+                graphics.setColor(Color.RED);
+            } else {
+                drawRectangleForCluster(graphics, cluster);
+            }
         }
         graphics.dispose();
+    }
+
+    private void drawRectangleForCluster(Graphics2D graphics, PointCluster cluster) {
+        graphics.drawRect(cluster.leftMostPoint.xCoord, cluster.topMostPoint.yCoord, cluster.width(), cluster.height());
     }
 }

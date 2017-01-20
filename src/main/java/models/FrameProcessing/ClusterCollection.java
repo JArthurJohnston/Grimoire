@@ -16,7 +16,7 @@ public class ClusterCollection {
     public boolean motionDetected;
 
     public ClusterCollection(List<PointCluster> clusters){
-        this.clusters = clusters;
+        this.clusters = new LinkedList<PointCluster>();
     }
 
     public List<PointCluster> nearbyClustersTo(PointCluster cluster){
@@ -28,4 +28,20 @@ public class ClusterCollection {
         }
         return clusters;
     }
+
+    public void handle(PointCluster cluster){
+        if(this.shouldAddCluster(cluster)){
+            this.clusters.add(cluster);
+        }
+    }
+
+    private boolean shouldAddCluster(PointCluster cluster){
+        for (PointCluster eachCluster : this.clusters) {
+            if(eachCluster.envelops(cluster))
+                return false;
+        }
+        return true;
+    }
+
+
 }

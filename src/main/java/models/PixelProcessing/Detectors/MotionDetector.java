@@ -1,58 +1,54 @@
 package models.PixelProcessing.Detectors;
 
-
 import models.FrameProcessing.ClusterCreator;
 import models.FrameProcessing.ClusterCollection;
+import models.FrameProcessing.FrameBuffer;
 import models.FrameProcessing.PointCluster;
-
+import models.PixelProcessing.Filters.PixelFilter;
 import java.awt.image.BufferedImage;
-import java.util.List;
 
-/**
- * Created by Arthur on 1/12/2017.
- */
-public class MotionDetector {
-    private int scanDistance = 1;
+public class MotionDetector extends Detector{
+    private static final int FRAMES_PER_SECOND = 30;
+    private static final int FIVE_SECONDS_OF_FRAMES = FRAMES_PER_SECOND * 5;
+    private final FrameBuffer frameBuffer;
     private final PixelDetector detector;
-    private ClusterCollection lastFrame;
 
-    public MotionDetector(PixelDetector detector){
+    public MotionDetector(PixelDetector detector, PixelFilter[] filters){
+        super(filters);
         this.detector = detector;
+        frameBuffer = new FrameBuffer(FIVE_SECONDS_OF_FRAMES);
     }
 
     public ClusterCollection processImage(BufferedImage image){
         ClusterCreator clusterCreator = new ClusterCreator();
         for (int y = 0; y < image.getHeight(); y+= scanDistance) {
             for (int x = 0; x < image.getWidth(); x++) {
-                int rgbValue = image.getRGB(x, y);
+                int rgbValue = applyFilters(image.getRGB(x, y));
                 if(detector.isInteresting(rgbValue)){
                     clusterCreator.handle(x, y);
                 }
+                if(shouldChangeImage){
+                    image.setRGB(x, y, rgbValue);
+                }
             }
         }
-        ClusterCollection frameCluster = new ClusterCollection(clusterCreator.getClusters());
-        processClusters(frameCluster);
-        return frameCluster;
+        ClusterCollection clusterCollection = new ClusterCollection(null);
+        for (PointCluster pointCluster : clusterCreator.getClusters()) {
+            clusterCollection.handle(pointCluster);
+        }
+        return clusterCollection;
     }
 
-    private void processClusters(ClusterCollection frameCluster) {
-        if(lastFrame != null){
-             detectMovements(frameCluster);
+    private int applyFilters(int rgbValue){
+        int newValue = rgbValue;
+        for (PixelFilter filter : this.filters) {
+            newValue = filter.execute(newValue);
         }
-        lastFrame = frameCluster;
-    }
-
-    private void detectMovements(ClusterCollection cluster){
-        for (PointCluster eachClusterFromLastFrame : lastFrame.clusters) {
-            List<PointCluster> nearbyClusters = cluster.nearbyClustersTo(eachClusterFromLastFrame);
-            if(!nearbyClusters.isEmpty()){
-                cluster.motionDetected = true;
-                System.out.println("Motion Detected");
-            }
-        }
+        return newValue;
     }
 
     public void updateScanDistance(int newDistance){
         this.scanDistance = newDistance;
     }
+
 }
