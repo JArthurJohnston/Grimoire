@@ -1,13 +1,11 @@
 package models.Cameras;
 
-import helpers.Helper;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.SyncFailedException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,6 +19,7 @@ public class FakeCamera implements Camera {
     private boolean isRunning;
     private final String directoryName;
     private long timestamp;
+    private static final int SPEED = 333;
 
     public FakeCamera(String directoryName){
         this.directoryName = directoryName;
@@ -32,7 +31,7 @@ public class FakeCamera implements Camera {
 
     private int getIndex(){
         long currentTimeMillis = System.currentTimeMillis();
-        if(currentTimeMillis - timestamp > 333){
+        if(currentTimeMillis - timestamp > SPEED){
             timestamp = currentTimeMillis;
             frameIndex++;
             if(frameIndex == frames.length){

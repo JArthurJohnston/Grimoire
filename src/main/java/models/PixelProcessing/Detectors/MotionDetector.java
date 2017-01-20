@@ -1,25 +1,27 @@
 package models.PixelProcessing.Detectors;
 
+import models.FrameProcessing.Buffer;
 import models.FrameProcessing.ClusterCreator;
 import models.FrameProcessing.ClusterCollection;
-import models.FrameProcessing.FrameBuffer;
 import models.FrameProcessing.PointCluster;
 import models.PixelProcessing.Filters.PixelFilter;
+
 import java.awt.image.BufferedImage;
 
 public class MotionDetector extends Detector{
     private static final int FRAMES_PER_SECOND = 30;
     private static final int FIVE_SECONDS_OF_FRAMES = FRAMES_PER_SECOND * 5;
-    private final FrameBuffer frameBuffer;
+    private final Buffer buffer;
     private final PixelDetector detector;
 
     public MotionDetector(PixelDetector detector, PixelFilter[] filters){
         super(filters);
         this.detector = detector;
-        frameBuffer = new FrameBuffer(FIVE_SECONDS_OF_FRAMES);
+        buffer = new Buffer(FIVE_SECONDS_OF_FRAMES);
     }
 
     public ClusterCollection processImage(BufferedImage image){
+        
         ClusterCreator clusterCreator = new ClusterCreator();
         for (int y = 0; y < image.getHeight(); y+= scanDistance) {
             for (int x = 0; x < image.getWidth(); x++) {
@@ -32,7 +34,7 @@ public class MotionDetector extends Detector{
                 }
             }
         }
-        ClusterCollection clusterCollection = new ClusterCollection(null);
+        ClusterCollection clusterCollection = new ClusterCollection();
         for (PointCluster pointCluster : clusterCreator.getClusters()) {
             clusterCollection.handle(pointCluster);
         }

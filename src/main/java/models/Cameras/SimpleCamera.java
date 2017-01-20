@@ -3,12 +3,13 @@ package models.Cameras;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.OpenCVFrameGrabber;
+import org.bytedeco.javacv.PS3EyeFrameGrabber;
 
 /**
  * Created by Arthur on 1/12/2017.
  */
 public class SimpleCamera implements Camera{
-    OpenCVFrameGrabber grabber;
+    FrameGrabber grabber;
     private boolean isRunning;
     //these camera values may change after the computer is rebooted
     private static final int WEBCAM = 0;
@@ -22,6 +23,7 @@ public class SimpleCamera implements Camera{
         //be sure to rebuild the project after changing the camera index
         grabber = new OpenCVFrameGrabber(WEBCAM);
         try {
+//            grabber = new PS3EyeFrameGrabber();
             grabber.start();
             isRunning = true;
         } catch (FrameGrabber.Exception e) {

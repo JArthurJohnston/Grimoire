@@ -13,9 +13,8 @@ public class ClusterCollection {
     private static final int FUDGE_FACTOR = 20;
 
     public final List<PointCluster> clusters;
-    public boolean motionDetected;
 
-    public ClusterCollection(List<PointCluster> clusters){
+    public ClusterCollection(){
         this.clusters = new LinkedList<PointCluster>();
     }
 

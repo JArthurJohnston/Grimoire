@@ -2,17 +2,17 @@ package models.FrameProcessing;
 
 import java.util.Enumeration;
 
-public class FrameBuffer implements Enumeration<ClusterCollection>{
+public class Buffer<T> implements Enumeration<T>{
 
     private int firstIndex;
     private int lastIndex;
     private int iteratorIndex;
-    private ClusterCollection[] frameClusters;
+    private T[] frameClusters;
     private final int capacity;
     private boolean capacityHasBeenReached;
 
-    public FrameBuffer(int capacity){
-        frameClusters = new ClusterCollection[capacity];
+    public Buffer(int capacity){
+        frameClusters = (T[])new Object[capacity];
         this.capacity = capacity;
         firstIndex = 0;
         lastIndex = -1;
@@ -37,16 +37,16 @@ public class FrameBuffer implements Enumeration<ClusterCollection>{
         iteratorIndex = firstIndex;
     }
 
-    public void push(ClusterCollection clusters){
+    public void push(T value){
         incrementIndexes();
-        frameClusters[lastIndex] = clusters;
+        frameClusters[lastIndex] = value;
     }
 
-    public ClusterCollection getFirst(){
+    public T getFirst(){
         return frameClusters[firstIndex];
     }
 
-    public ClusterCollection getLast(){
+    public T getLast(){
         return frameClusters[lastIndex];
     }
 
@@ -54,7 +54,7 @@ public class FrameBuffer implements Enumeration<ClusterCollection>{
         return iteratorIndex <= lastIndex;
     }
 
-    public ClusterCollection nextElement() {
+    public T nextElement() {
         return frameClusters[iteratorIndex++];
     }
 }

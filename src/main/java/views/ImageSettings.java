@@ -311,7 +311,7 @@ public class ImageSettings extends javax.swing.JFrame {
     }//GEN-LAST:event_resetButtonActionPerformed
 
     private void luminescenceSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_luminescenceSliderStateChanged
-        float newGamma = this.luminescenceSlider.getValue() /100.0f;
+        float newGamma = this.luminescenceSlider.getValue() /1000.0f;
         this.luminescenceLabel.setText(Float.toString(newGamma));
         this.luminescenceDetector.updateThreshold(newGamma);
         this.luminescenceFilter.update(newGamma);
