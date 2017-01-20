@@ -7,7 +7,9 @@ import java.nio.file.Paths;
  */
 public class Helper {
 
-    public static void printWorkingDirectory(){
-        System.out.println("PWD: " + Paths.get(".").toAbsolutePath().normalize().toString());
+    public static String printWorkingDirectory(){
+        String workingDirectory = "PWD: " + Paths.get(".").toAbsolutePath().normalize().toString();
+        System.out.println(workingDirectory);
+        return workingDirectory;
     }
 }

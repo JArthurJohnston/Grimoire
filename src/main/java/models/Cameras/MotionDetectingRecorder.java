@@ -12,19 +12,21 @@ import java.awt.image.BufferedImage;
 /**
  * Created by Arthur on 1/17/2017.
  */
-public class MotionDetectingCamera extends SimpleCamera {
+public class MotionDetectingRecorder {
 
     private final MotionDetector motionDetector;
     private final Java2DFrameConverter java2DFrameConverter;
     public ImageWriter writer;
+    private final Camera camera;
 
-    public MotionDetectingCamera(MotionDetector detector){
+    public MotionDetectingRecorder(MotionDetector detector, Camera camera){
+        this.camera = camera;
         motionDetector = detector;
         java2DFrameConverter = new Java2DFrameConverter();
     }
 
     public Frame getFrame(){
-        Frame frame = super.getFrame();
+        Frame frame = camera.getFrame();
         if(frame != null){
             BufferedImage bufferedImage = java2DFrameConverter.getBufferedImage(frame);
             ClusterCollection clusterCollection = motionDetector.processImage(bufferedImage);

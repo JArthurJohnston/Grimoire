@@ -1,6 +1,8 @@
 package models;
 
-import models.Cameras.MotionDetectingCamera;
+import models.Cameras.Camera;
+import models.Cameras.FakeCamera;
+import models.Cameras.MotionDetectingRecorder;
 import models.Cameras.SimpleCamera;
 import models.ImageProcessing.ImageFileCapture.ImageWriter;
 import models.PixelProcessing.Detectors.MotionDetector;
@@ -18,10 +20,13 @@ public class Grimoire {
 
     private static CanvasFrame canvas;
     private static ImageSettings imageSettings;
-    private static MotionDetectingCamera camera;
+    private static MotionDetectingRecorder recorder;
     public static ImageWriter imageWriter;
+    private static Camera camera;
 
     public static void main(String[] args){
+        camera = new FakeCamera("./res/raw-images/low-speed");
+//        camera = new SimpleCamera();
         canvas = new CanvasFrame("Webcam");
         canvas.addWindowListener(setupCloseListener());
         canvas.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
@@ -29,12 +34,13 @@ public class Grimoire {
 
         imageSettings = new ImageSettings();
 
-        MotionDetector motionDetector = new MotionDetector(imageSettings.luminescenceDetector, imageSettings.getFilters());
+        MotionDetector motionDetector =
+                new MotionDetector(imageSettings.luminescenceDetector, imageSettings.getFilters());
         motionDetector.shouldChangeImage = true;
-        camera = new MotionDetectingCamera(motionDetector);
+        recorder = new MotionDetectingRecorder(motionDetector, camera);
 
         imageWriter = new ImageWriter();
-        camera.writer = imageWriter;
+        recorder.writer = imageWriter;
 
         imageSettings.setDetector(motionDetector);
         imageSettings.setVisible(true);
@@ -43,10 +49,10 @@ public class Grimoire {
     }
 
     private static void startOpenCVFrameGrabber() {
-//        camera.addProcessor(imageWriter);
+//        recorder.addProcessor(imageWriter);
         camera.start();
         while (camera.isRunning()){
-            canvas.showImage(camera.getFrame());
+            canvas.showImage(recorder.getFrame());
         }
     }
 
