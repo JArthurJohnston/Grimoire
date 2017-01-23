@@ -19,7 +19,7 @@ public class FakeCamera implements Camera {
     private boolean isRunning;
     private final String directoryName;
     private long timestamp;
-    private static final int SPEED = 333;
+    private static final int SPEED = 300;
 
     public FakeCamera(String directoryName){
         this.directoryName = directoryName;
@@ -48,7 +48,6 @@ public class FakeCamera implements Camera {
             for (File file : imageDirectory.listFiles()) {
                 images.add(ImageIO.read(file));
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }

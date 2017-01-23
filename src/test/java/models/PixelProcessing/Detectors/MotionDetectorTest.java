@@ -30,11 +30,11 @@ public class MotionDetectorTest {
         MotionDetector motionDetector = new MotionDetector(pixelDetector,new PixelFilter[0]);
         Buffer buffer = getPrivateField(motionDetector, "buffer", Buffer.class);
 
-        assertFalse(buffer.hasMoreElements());
+        assertNull(buffer.get(0));
 
         motionDetector.processImage(loadTestImage("frame-1.png"));
 
-        assertTrue(buffer.hasMoreElements());
+        assertNotNull(buffer.get(0));
     }
 
 

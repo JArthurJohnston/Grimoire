@@ -1,5 +1,8 @@
 package models.FrameProcessing;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class PointCluster {
 
     private static final int FUDGE_FACTOR  = 7;
@@ -7,8 +10,10 @@ public class PointCluster {
     public Point leftMostPoint;
     public Point topMostPoint;
     public Point bottomMostPoint;
+    private final List<PointCluster> pastClusters;
 
     public PointCluster(Point point) {
+        pastClusters = new LinkedList<PointCluster>();
         setFirstPoint(point);
     }
 
@@ -31,8 +36,13 @@ public class PointCluster {
     }
 
     public boolean isPossibleWandPoint(){
-        final int FUDGE_FACTOR = 25;
-        return width() < FUDGE_FACTOR && height() < FUDGE_FACTOR;
+        final int UPPER_FUDGE_FACTOR = 25;
+        final int LOWER_FUDGE_FACTOR = 0;
+        int width = width();
+        int height = height();
+        return width < UPPER_FUDGE_FACTOR && height < UPPER_FUDGE_FACTOR;
+//        return width < UPPER_FUDGE_FACTOR || width > LOWER_FUDGE_FACTOR &&
+//                height < UPPER_FUDGE_FACTOR || height > LOWER_FUDGE_FACTOR;
     }
 
     public void add(Point point){
@@ -69,5 +79,22 @@ public class PointCluster {
         int xWidth = rightMostPoint.distanceTo(leftMostPoint) / 2;
         int yWidth = topMostPoint.distanceTo(bottomMostPoint) / 2;
         return new Point(rightMostPoint.xCoord - xWidth, topMostPoint.yCoord - yWidth);
+    }
+
+    public void addPastCluster(PointCluster cluster){
+        this.pastClusters.add(cluster);
+    }
+
+    public List<PointCluster> getPastClusters(){
+        return this.pastClusters;
+//        List<PointCluster> pointClusters;
+//        if(pastClusters == null){
+//            pointClusters = new LinkedList<PointCluster>();
+//            pointClusters.add(this);
+//            return pointClusters;
+//        }
+//        pointClusters = pastClusters.getPastClusters();
+//        pointClusters.add(this);
+//        return null;
     }
 }

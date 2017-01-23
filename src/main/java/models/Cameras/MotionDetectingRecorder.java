@@ -44,16 +44,31 @@ public class MotionDetectingRecorder {
         graphics.setColor(Color.RED);
         for (PointCluster cluster : clusters.clusters) {
             if(cluster.isPossibleWandPoint()){
-                graphics.setColor(Color.CYAN);
-                drawRectangleForCluster(graphics, cluster);
-                models.FrameProcessing.Point point = cluster.centerPoint();
-                graphics.drawString("WAND?", point.xCoord, point.yCoord);
+                drawWandPoint(graphics, cluster);
                 graphics.setColor(Color.RED);
             } else {
                 drawRectangleForCluster(graphics, cluster);
             }
         }
         graphics.dispose();
+    }
+
+    private void drawWandPoint(Graphics2D graphics, PointCluster cluster) {
+        graphics.setColor(Color.CYAN);
+        drawRectangleForCluster(graphics, cluster);
+        models.FrameProcessing.Point point = cluster.centerPoint();
+        graphics.drawString("WAND?", point.xCoord, point.yCoord);
+        drawMotionTail(graphics, cluster);
+    }
+
+    private void drawMotionTail(Graphics2D graphics, PointCluster cluster){
+        PointCluster currentCluster = cluster;
+        for (PointCluster pointCluster : cluster.getPastClusters()) {
+            graphics.drawLine(currentCluster.centerPoint().xCoord, currentCluster.centerPoint().yCoord,
+                    pointCluster.centerPoint().xCoord, pointCluster.centerPoint().yCoord);
+            currentCluster = pointCluster;
+        }
+
     }
 
     private void drawRectangleForCluster(Graphics2D graphics, PointCluster cluster) {

@@ -1,22 +1,21 @@
 package models.FrameProcessing;
 
-import java.util.Enumeration;
-
-public class Buffer<T> implements Enumeration<T>{
+public class Buffer<T>{
 
     private int firstIndex;
     private int lastIndex;
-    private int iteratorIndex;
-    private T[] frameClusters;
+    private T[] values;
     private final int capacity;
     private boolean capacityHasBeenReached;
 
     public Buffer(int capacity){
-        frameClusters = (T[])new Object[capacity];
+        if(capacity == 0){
+            throw new RuntimeException("Cannot instantiate Buffer with capacity of 0");
+        }
+        values = (T[])new Object[capacity];
         this.capacity = capacity;
         firstIndex = 0;
         lastIndex = -1;
-        iteratorIndex = 0;
         capacityHasBeenReached = false;
     }
 
@@ -34,27 +33,36 @@ public class Buffer<T> implements Enumeration<T>{
                 }
             }
         }
-        iteratorIndex = firstIndex;
     }
 
-    public void push(T value){
+    public void add(T value){
         incrementIndexes();
-        frameClusters[lastIndex] = value;
+        values[lastIndex] = value;
+    }
+
+    public T get(int offset){
+        int index = firstIndex + offset;
+        return index >= capacity ? values[index - capacity] : values[index];
     }
 
     public T getFirst(){
-        return frameClusters[firstIndex];
+        return values[firstIndex];
     }
 
     public T getLast(){
-        return frameClusters[lastIndex];
+        return values[lastIndex];
     }
 
-    public boolean hasMoreElements() {
-        return iteratorIndex <= lastIndex;
+    public void onEachDo(BufferAction<T> action){
+        for (int i = 0; i < capacity; i++) {
+            if(this.get(i) == null)
+                return;
+            action.performOn(this.get(i));
+        }
     }
 
-    public T nextElement() {
-        return frameClusters[iteratorIndex++];
+    public interface BufferAction<T> {
+        void performOn(T value);
     }
+
 }

@@ -25,7 +25,7 @@ public class Grimoire {
     private static Camera camera;
 
     public static void main(String[] args){
-//        camera = new FakeCamera("./res/raw-images/low-speed");
+//        camera = new FakeCamera("./res/raw-images/high-speed");
         camera = new SimpleCamera();
         canvas = new CanvasFrame("Webcam");
         canvas.addWindowListener(setupCloseListener());

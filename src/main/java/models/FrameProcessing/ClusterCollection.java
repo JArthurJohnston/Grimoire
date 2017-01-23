@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class ClusterCollection {
 
-    private static final int FUDGE_FACTOR = 20;
+    private static final int FUDGE_FACTOR = 50;
 
     public final List<PointCluster> clusters;
 

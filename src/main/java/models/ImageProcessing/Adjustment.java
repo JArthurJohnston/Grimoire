@@ -2,9 +2,6 @@ package models.ImageProcessing;
 
 import java.awt.image.BufferedImage;
 
-/**
- * Created by Arthur on 1/6/2017.
- */
 public abstract class Adjustment {
 
     public abstract void execute(final BufferedImage image);

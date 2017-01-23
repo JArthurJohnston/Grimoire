@@ -21,7 +21,7 @@ public class SimpleCamera implements Camera{
 
     public void start(){
         //be sure to rebuild the project after changing the camera index
-        grabber = new OpenCVFrameGrabber(WEBCAM);
+        grabber = new OpenCVFrameGrabber(USB);
         try {
 //            grabber = new PS3EyeFrameGrabber();
             grabber.start();
