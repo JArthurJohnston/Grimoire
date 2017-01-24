@@ -25,8 +25,13 @@ public class Grimoire {
     private static Camera camera;
 
     public static void main(String[] args){
-//        camera = new FakeCamera("./res/raw-images/high-speed");
-        camera = new SimpleCamera();
+        if(args.length == 0){
+            camera = new SimpleCamera();
+        } else if(args[0].equals("fake")) {
+            camera = new FakeCamera(args[1]);
+        } else {
+            camera = new FakeCamera("./res/raw-images/circular-motion");
+        }
         canvas = new CanvasFrame("Webcam");
         canvas.addWindowListener(setupCloseListener());
         canvas.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
@@ -42,14 +47,12 @@ public class Grimoire {
         imageWriter = new ImageWriter();
         recorder.writer = imageWriter;
 
-        imageSettings.setDetector(motionDetector);
         imageSettings.setVisible(true);
 
         startOpenCVFrameGrabber();
     }
 
     private static void startOpenCVFrameGrabber() {
-//        recorder.addProcessor(imageWriter);
         camera.start();
         while (camera.isRunning()){
             canvas.showImage(recorder.getFrame());

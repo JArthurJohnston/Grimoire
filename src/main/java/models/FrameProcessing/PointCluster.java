@@ -1,11 +1,13 @@
 package models.FrameProcessing;
 
+import models.UserSettings;
+import org.omg.PortableInterceptor.USER_EXCEPTION;
+
 import java.util.LinkedList;
 import java.util.List;
 
 public class PointCluster {
 
-    private static final int FUDGE_FACTOR  = 7;
     public Point rightMostPoint;
     public Point leftMostPoint;
     public Point topMostPoint;
@@ -13,7 +15,7 @@ public class PointCluster {
     private final List<PointCluster> pastClusters;
 
     public PointCluster(Point point) {
-        pastClusters = new LinkedList<PointCluster>();
+        pastClusters = new LinkedList<>();
         setFirstPoint(point);
     }
 
@@ -22,10 +24,11 @@ public class PointCluster {
     }
 
     public boolean contains(int x, int y){
-        boolean withinHorizontalBounds = x <= rightMostPoint.xCoord + FUDGE_FACTOR
-                && x >= leftMostPoint.xCoord - FUDGE_FACTOR;
-        boolean withinVerticalBounds = y >= topMostPoint.yCoord - FUDGE_FACTOR
-                && y <= bottomMostPoint.yCoord + FUDGE_FACTOR;
+        int containsDiameter = UserSettings.CLUSTER_CONTAINS_DIAMETER;
+        boolean withinHorizontalBounds = x <= rightMostPoint.xCoord + containsDiameter
+                && x >= leftMostPoint.xCoord - containsDiameter;
+        boolean withinVerticalBounds = y >= topMostPoint.yCoord - containsDiameter
+                && y <= bottomMostPoint.yCoord + containsDiameter;
         return withinHorizontalBounds && withinVerticalBounds;
     }
     public boolean envelops(PointCluster cluster){
@@ -36,13 +39,9 @@ public class PointCluster {
     }
 
     public boolean isPossibleWandPoint(){
-        final int UPPER_FUDGE_FACTOR = 25;
-        final int LOWER_FUDGE_FACTOR = 0;
         int width = width();
         int height = height();
-        return width < UPPER_FUDGE_FACTOR && height < UPPER_FUDGE_FACTOR;
-//        return width < UPPER_FUDGE_FACTOR || width > LOWER_FUDGE_FACTOR &&
-//                height < UPPER_FUDGE_FACTOR || height > LOWER_FUDGE_FACTOR;
+        return width < UserSettings.WAND_POINT_SIZE && height < UserSettings.WAND_POINT_SIZE;
     }
 
     public void add(Point point){
@@ -85,16 +84,7 @@ public class PointCluster {
         this.pastClusters.add(cluster);
     }
 
-    public List<PointCluster> getPastClusters(){
+    public List<PointCluster> getPastClusters() {
         return this.pastClusters;
-//        List<PointCluster> pointClusters;
-//        if(pastClusters == null){
-//            pointClusters = new LinkedList<PointCluster>();
-//            pointClusters.add(this);
-//            return pointClusters;
-//        }
-//        pointClusters = pastClusters.getPastClusters();
-//        pointClusters.add(this);
-//        return null;
     }
 }

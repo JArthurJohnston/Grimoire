@@ -2,27 +2,29 @@ package models.PixelProcessing.Detectors;
 
 import models.FrameProcessing.Buffer;
 import models.FrameProcessing.ClusterCreator;
-import models.FrameProcessing.ClusterCollection;
+import models.FrameProcessing.FrameData;
 import models.FrameProcessing.PointCluster;
 import models.PixelProcessing.Filters.PixelFilter;
+import models.UserSettings;
 import java.awt.image.BufferedImage;
+import java.util.Iterator;
 
 public class MotionDetector extends Detector{
     private static final int FRAMES_PER_SECOND = 30;
-    private static final int FIVE_SECONDS_OF_FRAMES = FRAMES_PER_SECOND * 5;
-    private final Buffer<ClusterCollection> buffer;
+    private static final int THREE_SECONDS_OF_FRAMES = (int)(FRAMES_PER_SECOND * 1.5f);
+    private final Buffer<FrameData> buffer;
     private final PixelDetector detector;
 
     public MotionDetector(PixelDetector detector, PixelFilter[] filters){
         super(filters);
         this.detector = detector;
-        buffer = new Buffer(FIVE_SECONDS_OF_FRAMES);
+        buffer = new Buffer(THREE_SECONDS_OF_FRAMES);
     }
 
-    public ClusterCollection processImage(BufferedImage image){
+    public FrameData processImage(BufferedImage image){
         ClusterCreator clusterCreator = new ClusterCreator();
-        for (int y = 0; y < image.getHeight(); y+= scanDistance) {
-            for (int x = 0; x < image.getWidth(); x+= scanDistance) {
+        for (int y = 0; y < image.getHeight(); y+= UserSettings.SCANLINES) {
+            for (int x = 0; x < image.getWidth(); x+= UserSettings.SCANLINES) {
                 int rgbValue = applyFilters(image.getRGB(x, y));
                 if(detector.isInteresting(rgbValue)){
                     clusterCreator.handle(x, y);
@@ -32,32 +34,35 @@ public class MotionDetector extends Detector{
                 }
             }
         }
-        ClusterCollection clusterCollection = new ClusterCollection();
+        FrameData frameData = new FrameData();
         for (PointCluster pointCluster : clusterCreator.getClusters()) {
-            clusterCollection.handle(pointCluster);
+            frameData.handle(pointCluster);
         }
-        processClusters(clusterCollection);
-        return clusterCollection;
+        processFrameData(frameData);
+        return frameData;
     }
 
-    private void processClusters(ClusterCollection clusters){
-        ClusterCollection currentClusters = clusters;
-        for (PointCluster cluster : currentClusters.clusters) {
+    private void processFrameData(FrameData data){
+        FrameData currentFrameData = data;
+        for (PointCluster cluster : currentFrameData.clusters) {
             if(cluster.isPossibleWandPoint()){
-                findLastClusterInMovement(cluster);
+                findPastWandClusters(cluster);
             }
         }
-        buffer.add(clusters);
+        buffer.add(data);
     }
 
-    private void findLastClusterInMovement(PointCluster cluster) {
-        buffer.onEachDo(eachClusterCollection -> {
-            for (PointCluster lastFramesCluster : eachClusterCollection.clusters) {
-                if(lastFramesCluster.centerPoint().distanceTo(cluster.centerPoint()) <= 40){
-                    cluster.addPastCluster(lastFramesCluster);
-                }
+    private void findPastWandClusters(PointCluster cluster) {
+        PointCluster currentCluster = cluster;
+        Iterator<FrameData> iterator = buffer.iterator();
+        while (iterator.hasNext()){
+            FrameData next = iterator.next();
+            PointCluster lastNearbyCluster = next.nearestClusterTo(currentCluster);
+            if(lastNearbyCluster != null){
+                cluster.addPastCluster(lastNearbyCluster);
+                currentCluster = lastNearbyCluster;
             }
-        });
+        }
     }
 
     private int applyFilters(int rgbValue){
@@ -67,9 +72,4 @@ public class MotionDetector extends Detector{
         }
         return newValue;
     }
-
-    public void updateScanDistance(int newDistance){
-        this.scanDistance = newDistance;
-    }
-
 }

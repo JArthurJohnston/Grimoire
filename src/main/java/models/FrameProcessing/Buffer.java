@@ -1,6 +1,8 @@
 package models.FrameProcessing;
 
-public class Buffer<T>{
+import java.util.Iterator;
+
+public class Buffer<T> {
 
     private int firstIndex;
     private int lastIndex;
@@ -54,15 +56,37 @@ public class Buffer<T>{
     }
 
     public void onEachDo(BufferAction<T> action){
-        for (int i = 0; i < capacity; i++) {
+        for (int i = capacity - 1; i >= 0; i--) {
             if(this.get(i) == null)
                 return;
             action.performOn(this.get(i));
         }
+
+    }
+
+    public BufferIterator iterator(){
+        return new BufferIterator();
     }
 
     public interface BufferAction<T> {
         void performOn(T value);
+    }
+
+    public class BufferIterator implements Iterator<T> {
+        private int index;
+        BufferIterator(){
+            index = capacity - 1;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return index > 0 && values[index] != null;
+        }
+
+        @Override
+        public T next() {
+            return Buffer.this.get(index--);
+        }
     }
 
 }

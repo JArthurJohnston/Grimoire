@@ -2,6 +2,7 @@ package models.FrameProcessing;
 
 import org.junit.Test;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import static org.junit.Assert.*;
@@ -11,8 +12,8 @@ public class BufferTest {
     @Test
     public void testAddClusterCollection() throws Exception{
         Buffer buffer = new Buffer(5);
-        ClusterCollection expectedClusters1 = new ClusterCollection();
-        ClusterCollection expectedClusters2 = new ClusterCollection();
+        FrameData expectedClusters1 = new FrameData();
+        FrameData expectedClusters2 = new FrameData();
 
         buffer.add(expectedClusters1);
 
@@ -27,15 +28,15 @@ public class BufferTest {
 
     @Test
     public void testAddOverridesFirstClustersWhenCapacityIsReached() throws Exception{
-        ClusterCollection expectedCluster1 = new ClusterCollection();
-        ClusterCollection expectedCluster2 = new ClusterCollection();
-        ClusterCollection expectedCluster3 = new ClusterCollection();
-        ClusterCollection expectedCluster4 = new ClusterCollection();
-        ClusterCollection expectedCluster5 = new ClusterCollection();
-        ClusterCollection expectedCluster6 = new ClusterCollection();
+        FrameData expectedCluster1 = new FrameData();
+        FrameData expectedCluster2 = new FrameData();
+        FrameData expectedCluster3 = new FrameData();
+        FrameData expectedCluster4 = new FrameData();
+        FrameData expectedCluster5 = new FrameData();
+        FrameData expectedCluster6 = new FrameData();
 
         Buffer buffer = new Buffer(3);
-        ClusterCollection[] initialClusters = {
+        FrameData[] initialClusters = {
                 expectedCluster1, expectedCluster2, expectedCluster3
         };
         addArrayToBuffer(buffer, initialClusters);
@@ -142,6 +143,27 @@ public class BufferTest {
         assertEquals(value2, bufferedValues.get(0));
         assertEquals(value3, bufferedValues.get(1));
         assertEquals(value4, bufferedValues.get(2));
+    }
+
+    @Test
+    public void testIterator_afterCapacityReached() throws Exception{
+        Buffer<String> buffer = new Buffer<String>(3);
+        String value1 = "hello";
+        String value2 = "world";
+        String value3 = "foo";
+        String value4 = "bar";
+        addArrayToBuffer(buffer, new String[]{value1, value2, value3});
+        buffer.add(value4);
+
+        Iterator<String> iterator = buffer.iterator();
+
+        assertTrue(iterator.hasNext());
+        assertEquals(value2, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertEquals(value3, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertEquals(value4, iterator.next());
+        assertFalse(iterator.hasNext());
     }
 
 

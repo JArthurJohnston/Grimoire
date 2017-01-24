@@ -6,6 +6,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,8 +19,7 @@ public class FakeCamera implements Camera {
     private final Java2DFrameConverter java2DFrameConverter;
     private boolean isRunning;
     private final String directoryName;
-    private long timestamp;
-    private static final int SPEED = 300;
+    private static final int SPEED = 200;
 
     public FakeCamera(String directoryName){
         this.directoryName = directoryName;
@@ -30,14 +30,10 @@ public class FakeCamera implements Camera {
     }
 
     private int getIndex(){
-        long currentTimeMillis = System.currentTimeMillis();
-        if(currentTimeMillis - timestamp > SPEED){
-            timestamp = currentTimeMillis;
             frameIndex++;
-            if(frameIndex == frames.length){
+            if(frameIndex >= frames.length){
                 frameIndex = 0;
             }
-        }
         return frameIndex;
     }
 
@@ -45,7 +41,9 @@ public class FakeCamera implements Camera {
         LinkedList<BufferedImage> images = new LinkedList<BufferedImage>();
         try {
             File imageDirectory = new File(directoryName);
-            for (File file : imageDirectory.listFiles()) {
+            File[] files = imageDirectory.listFiles();
+            Arrays.sort(files);
+            for (File file : files) {
                 images.add(ImageIO.read(file));
             }
         } catch (IOException e) {
@@ -56,7 +54,6 @@ public class FakeCamera implements Camera {
 
 
     public void start() {
-        timestamp = System.currentTimeMillis();
         isRunning = true;
     }
 
@@ -65,7 +62,13 @@ public class FakeCamera implements Camera {
     }
 
     public Frame getFrame() {
-        BufferedImage image = frames[getIndex()];
+        try {
+            Thread.sleep(SPEED);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        int index = getIndex();
+        BufferedImage image = frames[index];
         return java2DFrameConverter.getFrame(image);
     }
 

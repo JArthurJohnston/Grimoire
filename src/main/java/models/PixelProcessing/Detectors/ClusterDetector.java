@@ -1,6 +1,6 @@
 package models.PixelProcessing.Detectors;
 
-import models.FrameProcessing.ClusterCollection;
+import models.FrameProcessing.FrameData;
 
 import java.awt.image.BufferedImage;
 
@@ -15,5 +15,5 @@ public abstract class ClusterDetector {
         this.detector = detector;
     }
 
-    public abstract ClusterCollection processImage(BufferedImage image);
+    public abstract FrameData processImage(BufferedImage image);
 }
