@@ -1,0 +1,7 @@
+Brightness: -50
+Contrast: 17.629412
+Luminescence: 0.671
+Scanning: 1
+Motion Detection Radius: 3
+Clustering Distance: 19
+

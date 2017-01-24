@@ -5,7 +5,6 @@
  */
 package views;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -13,11 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JFileChooser;
 import models.Grimoire;
-import models.PixelProcessing.Detectors.Detector;
 import models.PixelProcessing.Detectors.LuminescenceDetector;
 import models.PixelProcessing.Filters.BrightnessFilter;
 import models.PixelProcessing.Filters.ContrastFilter;
@@ -72,8 +67,8 @@ public class ImageSettings extends javax.swing.JFrame {
     public PixelFilter[] getFilters(){
         return new PixelFilter[] {
             this.greyscaleFilter,
-            this.brightnessPixelAdjustment, 
-            this.contrastPixelAdjustment, 
+            this.brightnessPixelAdjustment,
+            this.contrastPixelAdjustment,
             this.luminescenceFilter
         };
     }

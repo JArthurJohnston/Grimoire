@@ -7,9 +7,6 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by Arthur on 1/17/2017.
- */
 public class FrameData {
 
 
@@ -40,6 +37,8 @@ public class FrameData {
     }
 
     private boolean shouldAddCluster(PointCluster cluster){
+        if(cluster.isPossibleWandPoint())
+            return true;
         for (PointCluster eachCluster : this.clusters) {
             if(eachCluster.envelops(cluster))
                 return false;
