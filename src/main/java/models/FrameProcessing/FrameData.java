@@ -30,10 +30,12 @@ public class FrameData {
         return clusters.get(0);
     }
 
-    public void handle(PointCluster cluster){
+    public boolean handle(PointCluster cluster){
         if(this.shouldAddCluster(cluster)){
             this.clusters.add(cluster);
+            return true;
         }
+        return false;
     }
 
     private boolean shouldAddCluster(PointCluster cluster){

@@ -14,54 +14,46 @@ import java.util.LinkedList;
 import java.util.List;
 import models.Grimoire;
 import models.PixelProcessing.Detectors.LuminescenceDetector;
-import models.PixelProcessing.Filters.BrightnessFilter;
-import models.PixelProcessing.Filters.ContrastFilter;
-import models.PixelProcessing.Filters.GreyscaleFilter;
-import models.PixelProcessing.Filters.LuminescenceFilter;
-import models.PixelProcessing.Filters.PixelFilter;
+import models.PixelProcessing.Filters.*;
 import models.UserSettings;
 
-/**
- *
- * @author Arthur
- */
 @SuppressWarnings("ALL")
 public class ImageSettings extends javax.swing.JFrame {
 
     private final BrightnessFilter brightnessPixelAdjustment;
     private final ContrastFilter contrastPixelAdjustment;
     private final LuminescenceFilter luminescenceFilter;
-    private final GreyscaleFilter greyscaleFilter;
+    private final PixelFilter greyscaleFilter;
     public final LuminescenceDetector luminescenceDetector;
-
-    /**
-     * Creates new form ImageSettings
-     */
     
     public ImageSettings() {
         initComponents();
         contrastPixelAdjustment = new ContrastFilter();
         brightnessPixelAdjustment = new BrightnessFilter();
         luminescenceFilter = new LuminescenceFilter();
-        greyscaleFilter = new GreyscaleFilter();
+        greyscaleFilter = new AverageGrayscaleFilter();
         luminescenceDetector = new LuminescenceDetector();
         this.setSliderDefaults();
         this.setLabelDefaults();
     }
     
     private void setLabelDefaults(){
-        this.luminescenceLabel.setText(Float.toString(UserSettings.DEFAULT_LUMEN_DISPLAY_VALUE/1000.0f));
-        this.brightnessLabel.setText(Integer.toString(this.brightnessPixelAdjustment.getBrightnessValue()));
+        this.luminescenceLabel.setText(Float.toString(UserSettings.Default.LUMINESCENCE_THREASHOLD/1000.0f));
+        this.brightnessLabel.setText(Integer.toString(UserSettings.Default.BRIGHTNESS));
         this.contrastLabel.setText(Float.toString(this.contrastPixelAdjustment.getContrastLevel()));
-        this.scanlineLabel.setText(Integer.toString(UserSettings.DEFAULT_SCANLINES));
-        this.motionDetectionLabel.setText(Integer.toString(UserSettings.DEFAULT_MOTION_DETECTION_RADIUS));
+        this.scanlineLabel.setText(Integer.toString(UserSettings.Default.SCANLINES));
+        this.motionDetectionLabel.setText(Integer.toString(UserSettings.Default.MOTION_DETECTION_RADIUS));
+        this.blurLabel.setText(Integer.toString(UserSettings.Default.BLUR_SIZE));
     }
 
     private void setSliderDefaults(){
-        this.brightnessSlider.setValue(this.brightnessPixelAdjustment.DEFAULT_BRIGHTNESS);
-        this.luminescenceSlider.setValue(UserSettings.DEFAULT_LUMEN_DISPLAY_VALUE);
+        this.brightnessSlider.setValue(UserSettings.Default.BRIGHTNESS);
+        this.luminescenceSlider.setValue(UserSettings.Default.LUMEN_DISPLAY_VALUE);
         this.contrastSlider.setValue((int)this.contrastPixelAdjustment.DEFAULT_CONTRAST_LEVEL);
-        this.motionDetectionSlider.setValue(UserSettings.DEFAULT_MOTION_DETECTION_RADIUS);
+        this.motionDetectionSlider.setValue(UserSettings.Default.MOTION_DETECTION_RADIUS);
+        this.grayscaleToggleButton.setSelected(UserSettings.Default.GRAYSCALE);
+        this.captureImageButton.setSelected(false);
+        this.blurSlider.setValue(UserSettings.Default.BLUR_SIZE);
     }
 
     public PixelFilter[] getFilters(){
@@ -105,6 +97,10 @@ public class ImageSettings extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         clusterDistanceSlider = new javax.swing.JSlider();
         clusterDistanceLabel = new javax.swing.JLabel();
+        grayscaleToggleButton = new javax.swing.JToggleButton();
+        blurSlider = new javax.swing.JSlider();
+        jLabel7 = new javax.swing.JLabel();
+        blurLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Image Settings");
@@ -240,7 +236,33 @@ public class ImageSettings extends javax.swing.JFrame {
             }
         });
 
+        clusterDistanceLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         clusterDistanceLabel.setText("7");
+
+        grayscaleToggleButton.setText("Grayscale Image");
+        grayscaleToggleButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                grayscaleToggleButtonActionPerformed(evt);
+            }
+        });
+
+        blurSlider.setMajorTickSpacing(5);
+        blurSlider.setMaximum(50);
+        blurSlider.setMinimum(1);
+        blurSlider.setMinorTickSpacing(1);
+        blurSlider.setPaintTicks(true);
+        blurSlider.setPaintTrack(false);
+        blurSlider.setValue(1);
+        blurSlider.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                blurSliderStateChanged(evt);
+            }
+        });
+
+        jLabel7.setText("Blurriness");
+
+        blurLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        blurLabel.setText("1");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -251,7 +273,6 @@ public class ImageSettings extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(brightnessSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(contrastSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(decrementLuminescenceButton)
@@ -262,17 +283,13 @@ public class ImageSettings extends javax.swing.JFrame {
                                 .addGap(0, 0, Short.MAX_VALUE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(luminescenceLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(brightnessLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(contrastLabel, javax.swing.GroupLayout.Alignment.TRAILING))
-                                .addGap(21, 21, 21))
-                            .addComponent(luminescenceLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE)))
+                                .addGap(1, 1, 1)
+                                .addComponent(contrastLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(saveSettingsButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(captureImageButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(resetButton))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -283,26 +300,43 @@ public class ImageSettings extends javax.swing.JFrame {
                                     .addComponent(jLabel3)
                                     .addComponent(jLabel5)
                                     .addComponent(jLabel4))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(252, 256, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(scanlineSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(motionDetectionSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(scanlineSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(clusterDistanceLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(scanlineLabel)
-                                .addGap(2, 2, 2))
-                            .addComponent(motionDetectionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addGap(2, 2, 2))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(motionDetectionSlider, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addGap(12, 12, 12)
                                 .addComponent(jLabel6))
-                            .addComponent(clusterDistanceSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                            .addComponent(clusterDistanceSlider, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(motionDetectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(blurSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(12, 12, 12)))
+                        .addComponent(blurLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(grayscaleToggleButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(captureImageButton)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(brightnessSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(brightnessLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -340,16 +374,25 @@ public class ImageSettings extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(clusterDistanceLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(clusterDistanceSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(motionDetectionSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(motionDetectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(motionDetectionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(motionDetectionSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(blurLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(blurSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(grayscaleToggleButton)
+                    .addComponent(captureImageButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(resetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(captureImageButton)
                     .addComponent(saveSettingsButton))
                 .addGap(7, 7, 7))
         );
@@ -416,6 +459,7 @@ public class ImageSettings extends javax.swing.JFrame {
             content.add("Scanning: " + this.scanlineSlider.getValue());
             content.add("Motion Detection Radius: " + UserSettings.MOTION_DETECTION_RADIUS);
             content.add("Clustering Distance: " + UserSettings.CLUSTER_CONTAINS_DIAMETER);
+            content.add("Blur: " + UserSettings.BLUR_SIZE);
             
             final Path settingsFile = Paths.get("./res/settings.txt");
             Files.write(settingsFile, content, Charset.forName("UTF-8"));
@@ -437,6 +481,21 @@ public class ImageSettings extends javax.swing.JFrame {
         UserSettings.CLUSTER_CONTAINS_DIAMETER = newValue;
     }//GEN-LAST:event_clusterDistanceSliderStateChanged
 
+    private void grayscaleToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_grayscaleToggleButtonActionPerformed
+        // TODO add your handling code here:
+        UserSettings.SHOULD_GRAYSCALE_IMAGE = this.grayscaleToggleButton.isSelected();
+    }//GEN-LAST:event_grayscaleToggleButtonActionPerformed
+
+    private void blurSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_blurSliderStateChanged
+        int newVal = this.blurSlider.getValue();
+        if(newVal % 2 == 0 ){
+            newVal += 1;
+            this.blurSlider.setValue(newVal);
+        }
+        UserSettings.BLUR_SIZE = newVal;
+        this.blurLabel.setText(Integer.toString(newVal));
+    }//GEN-LAST:event_blurSliderStateChanged
+
     private void updateLuminescence(float incrementalValue) {
         float newValue = UserSettings.LUMINESCENCE_THREASHOLD + incrementalValue;
         this.luminescenceFilter.update(newValue);
@@ -445,6 +504,8 @@ public class ImageSettings extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel blurLabel;
+    private javax.swing.JSlider blurSlider;
     private javax.swing.JLabel brightnessLabel;
     private javax.swing.JSlider brightnessSlider;
     private javax.swing.JToggleButton captureImageButton;
@@ -453,6 +514,7 @@ public class ImageSettings extends javax.swing.JFrame {
     private javax.swing.JLabel contrastLabel;
     private javax.swing.JSlider contrastSlider;
     private javax.swing.JButton decrementLuminescenceButton;
+    private javax.swing.JToggleButton grayscaleToggleButton;
     private javax.swing.JButton incrementLuminescenceButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -460,6 +522,7 @@ public class ImageSettings extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel luminescenceLabel;
     private javax.swing.JSlider luminescenceSlider;
     private javax.swing.JLabel motionDetectionLabel;

@@ -17,7 +17,7 @@ public class LuminescenceFilter extends PixelFilter {
     }
 
     public void reset() {
-        UserSettings.LUMINESCENCE_THREASHOLD = UserSettings.DEFAULT_LUMINESCENCE_THREASHOLD;
+        UserSettings.LUMINESCENCE_THREASHOLD = UserSettings.Default.LUMINESCENCE_THREASHOLD;
     }
 
     private static float findLuminescence( int rgbValiue) {

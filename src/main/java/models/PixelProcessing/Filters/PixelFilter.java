@@ -9,15 +9,20 @@ public abstract class PixelFilter {
 
     public abstract void reset();
 
+    protected static int alpha(int rgbValue){
+        return (rgbValue >> 24) & 0xFF;
+    }
+
     protected static int red(int rgbValue){
-        return (rgbValue >>> 16) & 0xFF;
+        return (rgbValue >> 16) & 0xFF;
     }
 
     protected static int green(int rgbValue){
-        return (rgbValue >>> 8) & 0xFF;
+        return (rgbValue >> 8) & 0xFF;
     }
+
     protected static int blue(int rgbValue){
-        return (rgbValue >>> 0) & 0xFF;
+        return rgbValue  & 0xFF;
     }
 
     protected static int truncate(int value){

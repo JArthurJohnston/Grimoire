@@ -8,17 +8,18 @@ import models.PixelProcessing.Filters.PixelFilter;
 import models.UserSettings;
 import java.awt.image.BufferedImage;
 import java.util.Iterator;
+import java.util.List;
 
 public class MotionDetector extends Detector{
     private static final int FRAMES_PER_SECOND = 30;
-    private static final int THREE_SECONDS_OF_FRAMES = (int)(FRAMES_PER_SECOND * 1.5f);
+    private static final int BUFFER_SIZE = (int)(FRAMES_PER_SECOND * 1.5f);
     private final Buffer<FrameData> buffer;
     private final PixelDetector detector;
 
     public MotionDetector(PixelDetector detector, PixelFilter[] filters){
         super(filters);
         this.detector = detector;
-        buffer = new Buffer(THREE_SECONDS_OF_FRAMES);
+        buffer = new Buffer(BUFFER_SIZE);
     }
 
     public FrameData processImage(BufferedImage image){
@@ -34,22 +35,21 @@ public class MotionDetector extends Detector{
                 }
             }
         }
-        FrameData frameData = new FrameData();
-        for (PointCluster pointCluster : clusterCreator.getClusters()) {
-            frameData.handle(pointCluster);
-        }
-        processFrameData(frameData);
+        FrameData frameData = processFrameData(clusterCreator.getClusters());
+        buffer.add(frameData);
         return frameData;
     }
 
-    private void processFrameData(FrameData data){
-        FrameData currentFrameData = data;
-        for (PointCluster cluster : currentFrameData.clusters) {
-            if(cluster.isPossibleWandPoint()){
-                findPastWandClusters(cluster);
+    private FrameData processFrameData(List<PointCluster> clusters){
+        FrameData currentFrame = new FrameData();
+        for (PointCluster pointCluster : clusters) {
+            if(currentFrame.handle(pointCluster)){
+                if(pointCluster.isPossibleWandPoint()){
+                    findPastWandClusters(pointCluster);
+                }
             }
         }
-        buffer.add(data);
+        return currentFrame;
     }
 
     private void findPastWandClusters(PointCluster cluster) {
