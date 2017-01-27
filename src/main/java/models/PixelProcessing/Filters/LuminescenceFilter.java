@@ -10,14 +10,14 @@ public class LuminescenceFilter extends PixelFilter {
     private static final int BLACK = 0;
 
     public int execute(int rgbValue) {
-        if(findLuminescence(rgbValue) < UserSettings.LUMINESCENCE_THREASHOLD){
+        if(findLuminescence(rgbValue) < UserSettings.LUMINESCENCE_THRESHOLD){
             return BLACK;
         }
         return rgbValue;
     }
 
     public void reset() {
-        UserSettings.LUMINESCENCE_THREASHOLD = UserSettings.Default.LUMINESCENCE_THREASHOLD;
+        UserSettings.LUMINESCENCE_THRESHOLD = UserSettings.Default.LUMINESCENCE_THRESHOLD;
     }
 
     private static float findLuminescence( int rgbValiue) {
@@ -26,6 +26,6 @@ public class LuminescenceFilter extends PixelFilter {
 
 
     public void update(float threashold){
-        UserSettings.LUMINESCENCE_THREASHOLD = threashold;
+        UserSettings.LUMINESCENCE_THRESHOLD = threashold;
     }
 }

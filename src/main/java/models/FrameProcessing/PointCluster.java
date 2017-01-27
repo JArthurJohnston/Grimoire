@@ -1,8 +1,7 @@
 package models.FrameProcessing;
 
+import models.PixelProcessing.Detectors.Gestures.GestureDetector;
 import models.UserSettings;
-import org.omg.PortableInterceptor.USER_EXCEPTION;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,8 +12,10 @@ public class PointCluster {
     public Point topMostPoint;
     public Point bottomMostPoint;
     private final List<PointCluster> pastClusters;
+    private final GestureDetector gestureDetector;
 
     public PointCluster(Point point) {
+        gestureDetector = new GestureDetector();
         pastClusters = new LinkedList<>();
         setFirstPoint(point);
     }
@@ -41,7 +42,9 @@ public class PointCluster {
     public boolean isPossibleWandPoint(){
         int width = width();
         int height = height();
-        return width < UserSettings.WAND_POINT_SIZE && height < UserSettings.WAND_POINT_SIZE;
+        boolean lessThanMaxWandSize = width < UserSettings.MAX_WAND_POINT_SIZE && height < UserSettings.MAX_WAND_POINT_SIZE;
+        boolean greaterThanMinWandSize = width > UserSettings.MIN_WAND_POINT_SIZE && height > UserSettings.MIN_WAND_POINT_SIZE;
+        return lessThanMaxWandSize && greaterThanMinWandSize;
     }
 
     public void add(Point point){
@@ -80,8 +83,12 @@ public class PointCluster {
         return new Point(rightMostPoint.xCoord - xWidth, topMostPoint.yCoord - yWidth);
     }
 
-    public void addPastCluster(PointCluster cluster){
-        this.pastClusters.add(cluster);
+    public boolean addPastCluster(PointCluster cluster){
+        if(!this.pastClusters.contains(cluster)){
+            this.pastClusters.add(cluster);
+            return true;
+        }
+        return false;
     }
 
     public List<PointCluster> getPastClusters() {

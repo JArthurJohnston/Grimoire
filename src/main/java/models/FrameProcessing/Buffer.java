@@ -9,8 +9,10 @@ public class Buffer<T> {
     private T[] values;
     private final int capacity;
     private boolean capacityHasBeenReached;
+    private boolean isEmpty;
 
     public Buffer(int capacity){
+        isEmpty = true;
         if(capacity == 0){
             throw new RuntimeException("Cannot instantiate Buffer with capacity of 0");
         }
@@ -38,6 +40,7 @@ public class Buffer<T> {
     }
 
     public void add(T value){
+        isEmpty = false;
         incrementIndexes();
         values[lastIndex] = value;
     }
@@ -62,6 +65,10 @@ public class Buffer<T> {
             action.performOn(this.get(i));
         }
 
+    }
+
+    public boolean isEmpty(){
+        return isEmpty;
     }
 
     public BufferIterator iterator(){

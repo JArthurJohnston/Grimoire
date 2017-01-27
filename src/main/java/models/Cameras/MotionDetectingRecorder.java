@@ -2,6 +2,7 @@ package models.Cameras;
 
 import models.FrameProcessing.*;
 import models.ImageProcessing.ImageFileCapture.ImageWriter;
+import models.PixelProcessing.Detectors.Gestures.Direction;
 import models.PixelProcessing.Detectors.MotionDetector;
 import models.UserSettings;
 import org.bytedeco.javacpp.opencv_core;
@@ -20,14 +21,12 @@ public class MotionDetectingRecorder {
     public ImageWriter writer;
     private final Camera camera;
     private OpenCVFrameConverter.ToIplImage toIplImage;
-    private OpenCVFrameConverter.ToMat toMat;
 
     public MotionDetectingRecorder(MotionDetector detector, Camera camera){
         this.camera = camera;
         motionDetector = detector;
         java2DFrameConverter = new Java2DFrameConverter();
         toIplImage = new OpenCVFrameConverter.ToIplImage();
-        toMat = new OpenCVFrameConverter.ToMat();
     }
 
     public Frame getFrame(){
@@ -45,20 +44,13 @@ public class MotionDetectingRecorder {
     }
 
     private static final int GAUSSIAN_STANDARD_DEV = 1;
-    private static final int APERATURE_SIZE = 3;
 
     private Frame blurImage(Frame frame) {
         opencv_core.IplImage iplImage = toIplImage.convertToIplImage(frame);
-//        opencv_core.Mat mat = toMat.convert(frame);
-//        boxFilter(mat, mat, APERATURE_HEIGHT, mat.size(), new opencv_core.Point(-1, -1));
-//        GaussianBlur(mat, mat, mat.size(), GAUSSIAN_STANDARD_DEV);
-
-//        org.bytedeco.javacpp.opencv_photo.fastNlMeansDenoisingColored(mat, mat);
         int blurSize = UserSettings.BLUR_SIZE;
         cvSmooth(iplImage, iplImage, CV_BLUR, blurSize, blurSize,
                 GAUSSIAN_STANDARD_DEV, GAUSSIAN_STANDARD_DEV);
         return toIplImage.convert(iplImage);
-//        return toMat.convert(mat);
     }
 
     private void drawBrightspotIds(BufferedImage bufferedImage, FrameData clusters) {
@@ -72,6 +64,7 @@ public class MotionDetectingRecorder {
                 drawRectangleForCluster(graphics, cluster);
             }
         }
+        drawMotionLabel(graphics);
         graphics.dispose();
     }
 
@@ -90,7 +83,11 @@ public class MotionDetectingRecorder {
                     pointCluster.centerPoint().xCoord, pointCluster.centerPoint().yCoord);
             currentCluster = pointCluster;
         }
+    }
 
+    private void drawMotionLabel(Graphics2D graphics){
+        graphics.setColor(Color.green);
+        graphics.drawString(motionDetector.currentMovement().label, 10, 15);
     }
 
     private void drawRectangleForCluster(Graphics2D graphics, PointCluster cluster) {

@@ -5,9 +5,6 @@ import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.OpenCVFrameGrabber;
 import org.bytedeco.javacv.PS3EyeFrameGrabber;
 
-/**
- * Created by Arthur on 1/12/2017.
- */
 public class SimpleCamera implements Camera{
     FrameGrabber grabber;
     private boolean isRunning;
@@ -21,7 +18,7 @@ public class SimpleCamera implements Camera{
 
     public void start(){
         //be sure to rebuild the project after changing the camera index
-        grabber = new OpenCVFrameGrabber(WEBCAM);
+        grabber = new OpenCVFrameGrabber(USB);
         try {
 //            grabber = new PS3EyeFrameGrabber();
             grabber.start();

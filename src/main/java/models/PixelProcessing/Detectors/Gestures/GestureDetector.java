@@ -1,34 +1,38 @@
 package models.PixelProcessing.Detectors.Gestures;
 
 import models.FrameProcessing.Point;
-import models.FrameProcessing.PointCluster;
-import java.util.LinkedList;
-import java.util.List;
+import models.PixelProcessing.Aggregator;
 
-/**
- * Created by arthur on 24/01/17.
- */
+import java.util.*;
+
 public class GestureDetector {
-    private final List<PointPair> pairs;
+    private Point currentPoint;
+    private final Aggregator<Direction> directionAggregator;
 
     public GestureDetector(){
-        pairs = new LinkedList<>();
+        directionAggregator = new Aggregator<>(Direction.NONE, Direction.values());
     }
 
-    public List<Gesture> getGesturesFrom(List<PointCluster> clusters){
-        return new LinkedList<>();
-    }
-
-    private class PointPair{
-        Point firstPoint;
-        Point secondPoint;
-        PointPair(Point first, Point second){
-            firstPoint = first;
-            secondPoint = second;
-        }
-
-        int length(){
-            return firstPoint.distanceTo(secondPoint);
+    public void addPoint(Point point){
+        if(currentPoint == null){
+            currentPoint = point;
+        } else {
+            directionAggregator.add(getGestureFor(currentPoint, point));
         }
     }
+
+    private Direction getGestureFor(Point a, Point b){
+        final int FUDGE_FACTOR = 10;
+        if(Math.abs(a.xCoord - b.xCoord) < FUDGE_FACTOR){
+            return  (a.yCoord > b.yCoord)? Direction.UPWARDS : Direction.DOWNWARDS;
+        } else if(Math.abs(a.yCoord - b.yCoord) < FUDGE_FACTOR){
+            return  (a.xCoord > b.xCoord)? Direction.LEFTWARDS : Direction.RIGHTWARDS;
+        }
+        return Direction.NONE;
+    }
+
+    public Direction getGesture(){
+        return directionAggregator.aggregate();
+    }
+
 }

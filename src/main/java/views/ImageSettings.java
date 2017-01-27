@@ -38,7 +38,7 @@ public class ImageSettings extends javax.swing.JFrame {
     }
     
     private void setLabelDefaults(){
-        this.luminescenceLabel.setText(Float.toString(UserSettings.Default.LUMINESCENCE_THREASHOLD/1000.0f));
+        this.luminescenceLabel.setText(Float.toString(UserSettings.Default.LUMINESCENCE_THRESHOLD /1000.0f));
         this.brightnessLabel.setText(Integer.toString(UserSettings.Default.BRIGHTNESS));
         this.contrastLabel.setText(Float.toString(this.contrastPixelAdjustment.getContrastLevel()));
         this.scanlineLabel.setText(Integer.toString(UserSettings.Default.SCANLINES));
@@ -455,7 +455,7 @@ public class ImageSettings extends javax.swing.JFrame {
             List<String> content = new LinkedList<String>();
             content.add("Brightness: " + Integer.toString(this.brightnessPixelAdjustment.getBrightnessValue()));
             content.add("Contrast: " + this.contrastPixelAdjustment.getContrastLevel());
-            content.add("Luminescence: " + UserSettings.LUMINESCENCE_THREASHOLD);
+            content.add("Luminescence: " + UserSettings.LUMINESCENCE_THRESHOLD);
             content.add("Scanning: " + this.scanlineSlider.getValue());
             content.add("Motion Detection Radius: " + UserSettings.MOTION_DETECTION_RADIUS);
             content.add("Clustering Distance: " + UserSettings.CLUSTER_CONTAINS_DIAMETER);
@@ -497,7 +497,7 @@ public class ImageSettings extends javax.swing.JFrame {
     }//GEN-LAST:event_blurSliderStateChanged
 
     private void updateLuminescence(float incrementalValue) {
-        float newValue = UserSettings.LUMINESCENCE_THREASHOLD + incrementalValue;
+        float newValue = UserSettings.LUMINESCENCE_THRESHOLD + incrementalValue;
         this.luminescenceFilter.update(newValue);
         this.luminescenceDetector.updateThreshold(newValue);
         this.luminescenceLabel.setText(Float.toString(newValue));

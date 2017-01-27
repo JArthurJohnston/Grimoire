@@ -5,6 +5,12 @@ package models.PixelProcessing.Detectors.Gestures;
  */
 public enum  Direction {
 
-    UPWARDS, DOWNWARDS, LEFTWARDS, RIGHTWARDS,
-    UPWARDS_RIGHT, UPWARDS_LEFT, DOWNWARDS_RIGHT, DOWNWARDS_LEFT;
+    NONE("NONE"), UPWARDS("Up"), DOWNWARDS("Down"), LEFTWARDS("Left"), RIGHTWARDS("Right"),
+    UPWARDS_RIGHT("Up Right"), UPWARDS_LEFT("Up Left"), DOWNWARDS_RIGHT("Down Right"), DOWNWARDS_LEFT("Down Left");
+
+    public final String label;
+    Direction(String label){
+        this.label = label;
+    }
+
 }
