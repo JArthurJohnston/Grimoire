@@ -1,7 +1,7 @@
 package models;
 
 import models.Cameras.Camera;
-import models.Cameras.FakeCamera;
+import models.Cameras.DemoCamera;
 import models.Cameras.MotionDetectingRecorder;
 import models.Cameras.SimpleCamera;
 import models.ImageProcessing.ImageFileCapture.ImageWriter;
@@ -28,9 +28,9 @@ public class Grimoire {
         if(args.length == 0){
             camera = new SimpleCamera();
         } else if(args[0].equals("fake")) {
-            camera = new FakeCamera(args[1]);
+            camera = new DemoCamera(args[1]);
         } else {
-            camera = new FakeCamera("./res/raw-images/circular-motion");
+            camera = new DemoCamera("./res/raw-images/circular-motion");
         }
         canvas = new CanvasFrame("Webcam");
         canvas.addWindowListener(setupCloseListener());

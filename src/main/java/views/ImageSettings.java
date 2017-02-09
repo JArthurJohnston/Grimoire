@@ -44,6 +44,8 @@ public class ImageSettings extends javax.swing.JFrame {
         this.scanlineLabel.setText(Integer.toString(UserSettings.Default.SCANLINES));
         this.motionDetectionLabel.setText(Integer.toString(UserSettings.Default.MOTION_DETECTION_RADIUS));
         this.blurLabel.setText(Integer.toString(UserSettings.Default.BLUR_SIZE));
+        this.surroundingBrightnessLabel.setText(Float.toString(UserSettings.Default.SURROUNDING_BRIGHTNESS /1000f));
+        this.gestureDetectLabel.setText(Integer.toString(UserSettings.GESTURE_DETECTION_DISTANCE));
     }
 
     private void setSliderDefaults(){
@@ -54,6 +56,8 @@ public class ImageSettings extends javax.swing.JFrame {
         this.grayscaleToggleButton.setSelected(UserSettings.Default.GRAYSCALE);
         this.captureImageButton.setSelected(false);
         this.blurSlider.setValue(UserSettings.Default.BLUR_SIZE);
+        this.surroundingBrightnessSlider.setValue(UserSettings.Default.SURROUNDING_BRIGHTNESS);
+        this.gestureDetectionSlider.setValue(UserSettings.Default.GESTURE_DETECTION_DISTANCE);
     }
 
     public PixelFilter[] getFilters(){
@@ -101,6 +105,12 @@ public class ImageSettings extends javax.swing.JFrame {
         blurSlider = new javax.swing.JSlider();
         jLabel7 = new javax.swing.JLabel();
         blurLabel = new javax.swing.JLabel();
+        surroundingBrightnessSlider = new javax.swing.JSlider();
+        jLabel8 = new javax.swing.JLabel();
+        surroundingBrightnessLabel = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        gestureDetectionSlider = new javax.swing.JSlider();
+        gestureDetectLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Image Settings");
@@ -264,6 +274,36 @@ public class ImageSettings extends javax.swing.JFrame {
         blurLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         blurLabel.setText("1");
 
+        surroundingBrightnessSlider.setMajorTickSpacing(100);
+        surroundingBrightnessSlider.setMaximum(1000);
+        surroundingBrightnessSlider.setMinorTickSpacing(50);
+        surroundingBrightnessSlider.setPaintTicks(true);
+        surroundingBrightnessSlider.setValue(600);
+        surroundingBrightnessSlider.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                surroundingBrightnessSliderStateChanged(evt);
+            }
+        });
+
+        jLabel8.setText("Surrounding Brightness");
+
+        surroundingBrightnessLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        surroundingBrightnessLabel.setText("0.6");
+
+        jLabel9.setText("Gesture Detection Distance");
+
+        gestureDetectionSlider.setMajorTickSpacing(10);
+        gestureDetectionSlider.setMinorTickSpacing(5);
+        gestureDetectionSlider.setPaintTicks(true);
+        gestureDetectionSlider.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                gestureDetectionSliderStateChanged(evt);
+            }
+        });
+
+        gestureDetectLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        gestureDetectLabel.setText("50");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -319,24 +359,35 @@ public class ImageSettings extends javax.swing.JFrame {
                             .addComponent(clusterDistanceSlider, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(motionDetectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(blurSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(12, 12, 12)))
-                        .addComponent(blurLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(grayscaleToggleButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(captureImageButton)
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(brightnessSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(brightnessLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(brightnessLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(blurSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(12, 12, 12))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(surroundingBrightnessSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(gestureDetectionSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel7)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(grayscaleToggleButton)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(captureImageButton))
+                                    .addComponent(jLabel8)
+                                    .addComponent(jLabel9))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(gestureDetectLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(surroundingBrightnessLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(blurLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -365,9 +416,9 @@ public class ImageSettings extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(scanlineSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(scanlineLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(scanlineLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(scanlineSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -387,10 +438,22 @@ public class ImageSettings extends javax.swing.JFrame {
                     .addComponent(blurLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(blurSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(grayscaleToggleButton)
-                    .addComponent(captureImageButton))
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(surroundingBrightnessLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(surroundingBrightnessSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(gestureDetectLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(gestureDetectionSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(captureImageButton)
+                    .addComponent(grayscaleToggleButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(resetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(saveSettingsButton))
@@ -451,15 +514,16 @@ public class ImageSettings extends javax.swing.JFrame {
 
     private void saveSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveSettingsButtonActionPerformed
         try {
-            // TODO add your handling code here:
             List<String> content = new LinkedList<String>();
             content.add("Brightness: " + Integer.toString(this.brightnessPixelAdjustment.getBrightnessValue()));
             content.add("Contrast: " + this.contrastPixelAdjustment.getContrastLevel());
             content.add("Luminescence: " + UserSettings.LUMINESCENCE_THRESHOLD);
             content.add("Scanning: " + this.scanlineSlider.getValue());
             content.add("Motion Detection Radius: " + UserSettings.MOTION_DETECTION_RADIUS);
-            content.add("Clustering Distance: " + UserSettings.CLUSTER_CONTAINS_DIAMETER);
+            content.add("Clustering Distance: " + UserSettings.CLUSTER_CONTAINS_DISTANCE);
             content.add("Blur: " + UserSettings.BLUR_SIZE);
+            content.add("Surrounding Brightness: " + UserSettings.SURROUNDING_BRIGHTNESS);
+            content.add("Gesture Detection Distance: " + UserSettings.GESTURE_DETECTION_DISTANCE);
             
             final Path settingsFile = Paths.get("./res/settings.txt");
             Files.write(settingsFile, content, Charset.forName("UTF-8"));
@@ -478,7 +542,7 @@ public class ImageSettings extends javax.swing.JFrame {
         // TODO add your handling code here:
         int newValue = this.clusterDistanceSlider.getValue();
         this.clusterDistanceLabel.setText(Integer.toString(newValue));
-        UserSettings.CLUSTER_CONTAINS_DIAMETER = newValue;
+        UserSettings.CLUSTER_CONTAINS_DISTANCE = newValue;
     }//GEN-LAST:event_clusterDistanceSliderStateChanged
 
     private void grayscaleToggleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_grayscaleToggleButtonActionPerformed
@@ -495,6 +559,21 @@ public class ImageSettings extends javax.swing.JFrame {
         UserSettings.BLUR_SIZE = newVal;
         this.blurLabel.setText(Integer.toString(newVal));
     }//GEN-LAST:event_blurSliderStateChanged
+
+    private void surroundingBrightnessSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_surroundingBrightnessSliderStateChanged
+        float newVal = this.surroundingBrightnessSlider.getValue() / 1000.0f;
+        this.surroundingBrightnessLabel.setText(Float.toString(newVal));
+        UserSettings.SURROUNDING_BRIGHTNESS = newVal;
+        
+    }//GEN-LAST:event_surroundingBrightnessSliderStateChanged
+
+    private void gestureDetectionSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_gestureDetectionSliderStateChanged
+        // TODO add your handling code here:
+        int newVal = this.gestureDetectionSlider.getValue();
+        this.gestureDetectLabel.setText(Integer.toString(newVal));
+        UserSettings.GESTURE_DETECTION_DISTANCE = newVal;
+        
+    }//GEN-LAST:event_gestureDetectionSliderStateChanged
 
     private void updateLuminescence(float incrementalValue) {
         float newValue = UserSettings.LUMINESCENCE_THRESHOLD + incrementalValue;
@@ -514,6 +593,8 @@ public class ImageSettings extends javax.swing.JFrame {
     private javax.swing.JLabel contrastLabel;
     private javax.swing.JSlider contrastSlider;
     private javax.swing.JButton decrementLuminescenceButton;
+    private javax.swing.JLabel gestureDetectLabel;
+    private javax.swing.JSlider gestureDetectionSlider;
     private javax.swing.JToggleButton grayscaleToggleButton;
     private javax.swing.JButton incrementLuminescenceButton;
     private javax.swing.JLabel jLabel1;
@@ -523,6 +604,8 @@ public class ImageSettings extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JLabel luminescenceLabel;
     private javax.swing.JSlider luminescenceSlider;
     private javax.swing.JLabel motionDetectionLabel;
@@ -531,5 +614,7 @@ public class ImageSettings extends javax.swing.JFrame {
     private javax.swing.JButton saveSettingsButton;
     private javax.swing.JLabel scanlineLabel;
     private javax.swing.JSlider scanlineSlider;
+    private javax.swing.JLabel surroundingBrightnessLabel;
+    private javax.swing.JSlider surroundingBrightnessSlider;
     // End of variables declaration//GEN-END:variables
 }

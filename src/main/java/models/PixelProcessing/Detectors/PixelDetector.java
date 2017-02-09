@@ -5,5 +5,5 @@ package models.PixelProcessing.Detectors;
  */
 public interface PixelDetector {
 
-    boolean isInteresting(int rgbValue);
+    boolean isBrightEnough(int rgbValue);
 }

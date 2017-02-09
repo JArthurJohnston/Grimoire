@@ -1,13 +1,16 @@
 package models.FrameProcessing;
 
+import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import java.util.List;
 
 public class ClusterCreator {
 
     private final List<PointCluster> clusters;
+    private BufferedImage image;
 
-    public ClusterCreator(){
+    public ClusterCreator(BufferedImage image){
+        this.image = image;
         clusters = new LinkedList();
     }
 
@@ -18,7 +21,7 @@ public class ClusterCreator {
                 return;
             }
         }
-        clusters.add(new PointCluster(new Point(xCoord, yCoord)));
+        clusters.add(new PointCluster(this.image, new Point(xCoord, yCoord)));
     }
 
     public List<PointCluster> getClusters(){

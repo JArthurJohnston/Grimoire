@@ -1,9 +1,10 @@
 package models.FrameProcessing;
 
-import models.PixelProcessing.Detectors.Gestures.GestureDetector;
+import models.PixelProcessing.Detectors.Gestures.ClusterGestureDetector;
+import models.PixelProcessing.Detectors.Gestures.Direction;
 import models.UserSettings;
+import java.awt.image.BufferedImage;
 import java.util.LinkedList;
-import java.util.List;
 
 public class PointCluster {
 
@@ -11,13 +12,19 @@ public class PointCluster {
     public Point leftMostPoint;
     public Point topMostPoint;
     public Point bottomMostPoint;
-    private final List<PointCluster> pastClusters;
-    private final GestureDetector gestureDetector;
+    private final LinkedList<PointCluster> pastClusters;
+    private BufferedImage image;
+    private final ClusterGestureDetector detector;
 
-    public PointCluster(Point point) {
-        gestureDetector = new GestureDetector();
+    public PointCluster(BufferedImage image, Point point) {
+        this.image = image;
         pastClusters = new LinkedList<>();
         setFirstPoint(point);
+        detector = new ClusterGestureDetector(this);
+    }
+
+    public Direction getGestureDirection(){
+        return detector.getGestureDirection();
     }
 
     public boolean contains(Point point) {
@@ -25,13 +32,14 @@ public class PointCluster {
     }
 
     public boolean contains(int x, int y){
-        int containsDiameter = UserSettings.CLUSTER_CONTAINS_DIAMETER;
-        boolean withinHorizontalBounds = x <= rightMostPoint.xCoord + containsDiameter
-                && x >= leftMostPoint.xCoord - containsDiameter;
-        boolean withinVerticalBounds = y >= topMostPoint.yCoord - containsDiameter
-                && y <= bottomMostPoint.yCoord + containsDiameter;
+        int containsDistance = UserSettings.CLUSTER_CONTAINS_DISTANCE;
+        boolean withinHorizontalBounds = x <= rightMostPoint.xCoord + containsDistance
+                && x >= leftMostPoint.xCoord - containsDistance;
+        boolean withinVerticalBounds = y >= topMostPoint.yCoord - containsDistance
+                && y <= bottomMostPoint.yCoord + containsDistance;
         return withinHorizontalBounds && withinVerticalBounds;
     }
+
     public boolean envelops(PointCluster cluster){
         return this.contains(cluster.rightMostPoint) &&
                 this.contains(cluster.leftMostPoint) &&
@@ -40,6 +48,11 @@ public class PointCluster {
     }
 
     public boolean isPossibleWandPoint(){
+        return isTheCorrectSize();
+//                && averageSurroundingLuminosity() > UserSettings.SURROUNDING_BRIGHTNESS;
+    }
+
+    private boolean isTheCorrectSize(){
         int width = width();
         int height = height();
         boolean lessThanMaxWandSize = width < UserSettings.MAX_WAND_POINT_SIZE && height < UserSettings.MAX_WAND_POINT_SIZE;
@@ -91,7 +104,11 @@ public class PointCluster {
         return false;
     }
 
-    public List<PointCluster> getPastClusters() {
+    public LinkedList<PointCluster> getPastClusters() {
         return this.pastClusters;
+    }
+
+    public void clearPastClusters(){
+        this.pastClusters.clear();
     }
 }

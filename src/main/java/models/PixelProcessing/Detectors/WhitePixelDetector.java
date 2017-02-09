@@ -9,7 +9,7 @@ public class WhitePixelDetector implements PixelDetector{
 
     private static final int WHITE_VALUE = Color.white.getRGB();
 
-    public boolean isInteresting(int rgbValue) {
+    public boolean isBrightEnough(int rgbValue) {
         return rgbValue == WHITE_VALUE;
     }
 }

@@ -93,59 +93,6 @@ public class BufferTest {
     }
 
     @Test
-    public void testOnEachDo_emptyBuffer() throws Exception{
-        Buffer<String> buffer = new Buffer<String>(3);
-
-        buffer.onEachDo((value) -> fail("this shouldn't have been called"));
-    }
-
-    @Test
-    public void testOnEachDo_beforeCapacityReached() throws Exception{
-        Buffer<String> buffer = new Buffer<String>(3);
-        String value1 = "hello";
-        String value2 = "world";
-        String value3 = "foo";
-        addArrayToBuffer(buffer, new String[]{value1, value2});
-
-        LinkedList<String> bufferedValues = new LinkedList();
-
-        buffer.onEachDo(eachString -> bufferedValues.add(eachString));
-
-        assertEquals(2, bufferedValues.size());
-        assertEquals(value1, bufferedValues.get(0));
-        assertEquals(value2, bufferedValues.get(1));
-
-        bufferedValues.clear();
-        buffer.add(value3);
-
-        buffer.onEachDo(eachString -> bufferedValues.add(eachString));
-
-        assertEquals(3, bufferedValues.size());
-        assertEquals(value1, bufferedValues.get(0));
-        assertEquals(value2, bufferedValues.get(1));
-        assertEquals(value3, bufferedValues.get(2));
-    }
-
-    @Test
-    public void testOnEachDo_afterCapacityReached() throws Exception{
-        Buffer<String> buffer = new Buffer<String>(3);
-        String value1 = "hello";
-        String value2 = "world";
-        String value3 = "foo";
-        String value4 = "bar";
-        addArrayToBuffer(buffer, new String[]{value1, value2, value3});
-        buffer.add(value4);
-        LinkedList<String> bufferedValues = new LinkedList();
-
-        buffer.onEachDo(eachString -> bufferedValues.add(eachString));
-
-        assertEquals(3, bufferedValues.size());
-        assertEquals(value2, bufferedValues.get(0));
-        assertEquals(value3, bufferedValues.get(1));
-        assertEquals(value4, bufferedValues.get(2));
-    }
-
-    @Test
     public void testIterator_afterCapacityReached() throws Exception{
         Buffer<String> buffer = new Buffer<String>(3);
         String value1 = "hello";
@@ -166,7 +113,50 @@ public class BufferTest {
         assertFalse(iterator.hasNext());
     }
 
+    @Test
+    public void testIteratorBeforeCapacityReached() throws Exception{
+        Buffer<String> buffer = new Buffer<String>(5);
+        String value1 = "hello";
+        String value2 = "world";
+        String value3 = "foo";
+        addArrayToBuffer(buffer, new String[]{value1, value2, value3});
 
+        Iterator<String> iterator = buffer.iterator();
+
+        assertTrue(iterator.hasNext());
+        assertEquals(value1, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertEquals(value2, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertEquals(value3, iterator.next());
+        assertFalse(iterator.hasNext());
+    }
+
+    @Test
+    public void testIteratorWhenCapacityReached() throws Exception{
+        Buffer<String> buffer = new Buffer<String>(3);
+        String value1 = "hello";
+        String value2 = "world";
+        String value3 = "foo";
+        addArrayToBuffer(buffer, new String[]{value1, value2, value3});
+
+        Iterator<String> iterator = buffer.iterator();
+
+        assertTrue(iterator.hasNext());
+        assertEquals(value1, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertEquals(value2, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertEquals(value3, iterator.next());
+        assertFalse(iterator.hasNext());
+    }
+
+    @Test
+    public void testIteratorWhenEmpty() throws Exception{
+        Buffer<String> buffer = new Buffer<String>(3);
+        BufferIterator iterator = buffer.iterator();
+        assertFalse(iterator.hasNext());
+    }
 
     @Test
     public void testBufferThrowsExceptionWhenBuiltWithCapacityOfZero() throws Exception{

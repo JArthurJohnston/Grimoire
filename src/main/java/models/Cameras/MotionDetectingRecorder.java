@@ -1,8 +1,10 @@
 package models.Cameras;
 
 import models.FrameProcessing.*;
+import models.FrameProcessing.Point;
 import models.ImageProcessing.ImageFileCapture.ImageWriter;
 import models.PixelProcessing.Detectors.Gestures.Direction;
+import models.PixelProcessing.Detectors.Gestures.RuneKeeper;
 import models.PixelProcessing.Detectors.MotionDetector;
 import models.UserSettings;
 import org.bytedeco.javacpp.opencv_core;
@@ -18,6 +20,7 @@ public class MotionDetectingRecorder {
 
     private final MotionDetector motionDetector;
     private final Java2DFrameConverter java2DFrameConverter;
+    private final RuneKeeper runekeeper;
     public ImageWriter writer;
     private final Camera camera;
     private OpenCVFrameConverter.ToIplImage toIplImage;
@@ -27,6 +30,7 @@ public class MotionDetectingRecorder {
         motionDetector = detector;
         java2DFrameConverter = new Java2DFrameConverter();
         toIplImage = new OpenCVFrameConverter.ToIplImage();
+        runekeeper = new RuneKeeper(motionDetector);
     }
 
     public Frame getFrame(){
@@ -64,7 +68,6 @@ public class MotionDetectingRecorder {
                 drawRectangleForCluster(graphics, cluster);
             }
         }
-        drawMotionLabel(graphics);
         graphics.dispose();
     }
 
@@ -83,11 +86,22 @@ public class MotionDetectingRecorder {
                     pointCluster.centerPoint().xCoord, pointCluster.centerPoint().yCoord);
             currentCluster = pointCluster;
         }
+        if(!cluster.getPastClusters().isEmpty()){
+            graphics.setColor(Color.MAGENTA);
+            drawGestureLine(graphics, cluster);
+        }
     }
 
-    private void drawMotionLabel(Graphics2D graphics){
-        graphics.setColor(Color.green);
-        graphics.drawString(motionDetector.currentMovement().label, 10, 15);
+    private void drawGestureLine(Graphics2D graphics, PointCluster cluster) {
+        Point currentPoint = cluster.centerPoint();
+        Point firstPoint = cluster.getPastClusters().getLast().centerPoint();
+        graphics.drawLine(currentPoint.xCoord, currentPoint.yCoord, firstPoint.xCoord, firstPoint.yCoord);
+        Direction gestureDirection = cluster.getGestureDirection();
+        if(gestureDirection != Direction.NONE){
+            graphics.setColor(Color.GREEN);
+            graphics.drawString(gestureDirection.label, 10, 15);
+            runekeeper.swipe(gestureDirection);
+        }
     }
 
     private void drawRectangleForCluster(Graphics2D graphics, PointCluster cluster) {

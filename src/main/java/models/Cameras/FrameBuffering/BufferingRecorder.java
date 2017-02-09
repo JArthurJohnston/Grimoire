@@ -31,4 +31,9 @@ public class BufferingRecorder {
         BufferedImage image = converter.convert(frame);
         return frame;
     }
+
+    private void bufferFrame(BufferedImage image){
+        width = image.getWidth();
+        height = image.getHeight();
+    }
 }

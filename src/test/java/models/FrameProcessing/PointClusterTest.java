@@ -2,23 +2,23 @@ package models.FrameProcessing;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.awt.image.BufferedImage;
 
-/**
- * Created by Arthur on 1/14/2017.
- */
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+
 public class PointClusterTest {
 
     @Test
     public void testConstruction() throws Exception {
         Point point = new Point(4, 5);
-        PointCluster cluster = new PointCluster(point);
+        PointCluster cluster = new PointCluster(mock(BufferedImage.class), point);
     }
 
     @Test
     public void testClusterContainsPoint() throws Exception {
         Point point = new Point(4, 5);
-        PointCluster cluster = new PointCluster(point);
+        PointCluster cluster = new PointCluster(mock(BufferedImage.class), point);
 
         assertTrue(cluster.contains(new Point(4, 9)));
         assertTrue(cluster.contains(new Point(8, 5)));
@@ -30,7 +30,7 @@ public class PointClusterTest {
     @Test
     public void testRightMostPoint() throws Exception {
         Point point = new Point(114, 50);
-        PointCluster cluster = new PointCluster(point);
+        PointCluster cluster = new PointCluster(mock(BufferedImage.class), point);
 
         assertSame(point, cluster.rightMostPoint);
 
@@ -43,7 +43,7 @@ public class PointClusterTest {
     @Test
     public void testLeftMostPoint() throws Exception {
         Point point = new Point(114, 50);
-        PointCluster cluster = new PointCluster(point);
+        PointCluster cluster = new PointCluster(mock(BufferedImage.class), point);
 
         assertSame(point, cluster.leftMostPoint);
 
@@ -56,7 +56,7 @@ public class PointClusterTest {
     @Test
     public void testTopMostPoint() throws Exception {
         Point point = new Point(114, 51);
-        PointCluster cluster = new PointCluster(point);
+        PointCluster cluster = new PointCluster(mock(BufferedImage.class), point);
 
         assertSame(point, cluster.topMostPoint);
 
@@ -69,7 +69,7 @@ public class PointClusterTest {
     @Test
     public void testBottomMostPoint() throws Exception {
         Point point = new Point(114, 49);
-        PointCluster cluster = new PointCluster(point);
+        PointCluster cluster = new PointCluster(mock(BufferedImage.class), point);
 
         assertSame(point, cluster.bottomMostPoint);
 
@@ -82,7 +82,7 @@ public class PointClusterTest {
     @Test
     public void testCenterPoint() throws Exception {
         Point rightPoint = new Point(0, 50);
-        PointCluster cluster = new PointCluster(rightPoint);
+        PointCluster cluster = new PointCluster(mock(BufferedImage.class), rightPoint);
         Point topPoint = new Point(50, 0);
         cluster.add(topPoint);
         Point leftPoint = new Point(100, 50);

@@ -1,8 +1,5 @@
 package models.FrameProcessing;
 
-/**
- * Created by Arthur on 1/11/2017.
- */
 public class Point {
 
     public final int xCoord;
